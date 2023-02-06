@@ -23,7 +23,7 @@ jobs:
       - name: Build project
         run: |
           mkdir gospel-ambition-stats-endpoint
-          cp -r gospel-ambition-stats-endpoint.php disciple_tools globals kingdom_training pray4movement prayer_global zume_vision version-control.json LICENSE SECURITY.md gospel-ambition-stats-endpoint/
+          cp -r gospel-ambition-stats-endpoint.php disciple_tools globals kingdom_training pray4movement prayer_global zume_vision version-control.json gospel-ambition-stats-endpoint/
           zip -r gospel-ambition-stats-endpoint.zip gospel-ambition-stats-endpoint
       - name: Create Release
         id: create_release
