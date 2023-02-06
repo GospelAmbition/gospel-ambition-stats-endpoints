@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Gospel Ambition Stats Endpoint
- * Plugin URI: https://github.com/ChasmSolutions/gospel-ambition-stats-endpoint
+ * Plugin URI: https://github.com/GospelAmbition/gospel-ambition-stats-endpoint
  * Description: Gospel Ambition Stats Endpoint
  * Text Domain: gospel-ambition-stats-endpoint
  * Domain Path: /languages
  * Version:  0.1
- * Author URI: https://github.com/ChasmSolutions/gospel-ambition-stats-endpoint
- * GitHub Plugin URI: https://github.com/ChasmSolutions/gospel-ambition-stats-endpoint
+ * Author URI: https://github.com/GospelAmbition/gospel-ambition-stats-endpoint
+ * GitHub Plugin URI: https://github.com/GospelAmbition/gospel-ambition-stats-endpoint
  * Requires at least: 4.7.0
  * (Requires 4.7+ because of the integration of the REST API at 4.7 and the security requirements of this milestone version.)
  * Tested up to: 6.3

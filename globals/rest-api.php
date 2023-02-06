@@ -1,7 +1,7 @@
 <?php
 if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
-class GO_Stats_Endpoints_Endpoints
+class GO_Stats_Endpoints
 {
 
     public function add_api_routes() {
@@ -16,13 +16,12 @@ class GO_Stats_Endpoints_Endpoints
         );
     }
 
-
     public function endpoint( WP_REST_Request $request ) {
-        $array = [
+        $stats = [
             'site_name' => get_bloginfo(),
         ];
 
-       return apply_filters( 'go_stats_endpoint', $array );
+        return apply_filters( 'go_stats_endpoint', $stats );
     }
 
     private static $_instance = null;
@@ -36,4 +35,4 @@ class GO_Stats_Endpoints_Endpoints
         add_action( 'rest_api_init', [ $this, 'add_api_routes' ] );
     }
 }
-GO_Stats_Endpoints_Endpoints::instance();
+GO_Stats_Endpoints::instance();
