@@ -35,6 +35,9 @@ class GO_Context_Switcher {
             case 'Prayer Global':
                 require_once( 'prayer_global/loader.php' );
                 break;
+            case 'Vision':
+                require_once( 'zume_vision/loader.php' );
+                break;
 
             default:
                 return false;

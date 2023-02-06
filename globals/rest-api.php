@@ -3,9 +3,22 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
 class GO_Stats_Endpoints
 {
-
+    public $namespace = 'go-stats/v1';
+    private static $_instance = null;
+    public static function instance() {
+        if ( is_null( self::$_instance ) ) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
+    public function __construct() {
+        if ( $this->dt_is_rest() ) {
+            add_action( 'rest_api_init', [ $this, 'add_api_routes' ] );
+            add_filter( 'dt_allow_rest_access', [ $this, 'authorize_url' ], 10, 1 );
+        }
+    }
     public function add_api_routes() {
-        $namespace = 'go-stats/v1';
+        $namespace = $this->namespace;
 
         register_rest_route(
             $namespace, '/endpoint', [
@@ -15,24 +28,39 @@ class GO_Stats_Endpoints
             ]
         );
     }
-
     public function endpoint( WP_REST_Request $request ) {
         $stats = [
             'site_name' => get_bloginfo(),
+            'stats_timestamp' => time(),
         ];
 
         return apply_filters( 'go_stats_endpoint', $stats );
     }
 
-    private static $_instance = null;
-    public static function instance() {
-        if ( is_null( self::$_instance ) ) {
-            self::$_instance = new self();
+
+    public function authorize_url( $authorized ){
+        if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), $this->namespace . '/endpoint' ) !== false ) {
+            $authorized = true;
         }
-        return self::$_instance;
-    } // End instance()
-    public function __construct() {
-        add_action( 'rest_api_init', [ $this, 'add_api_routes' ] );
+        return $authorized;
+    }
+    public function dt_is_rest( $namespace = null ) {
+        // https://github.com/DiscipleTools/disciple-tools-theme/blob/a6024383e954cec2ac4e7a1a31fb4601c940f485/dt-core/global-functions.php#L60
+        // Added here so that in non-dt sites there is no dependency.
+        $prefix = rest_get_url_prefix();
+        if ( defined( 'REST_REQUEST' ) && REST_REQUEST
+            || isset( $_GET['rest_route'] )
+            && strpos( trim( sanitize_text_field( wp_unslash( $_GET['rest_route'] ) ), '\\/' ), $prefix, 0 ) === 0 ) {
+            return true;
+        }
+        $rest_url    = wp_parse_url( site_url( $prefix ) );
+        $current_url = wp_parse_url( add_query_arg( array() ) );
+        $is_rest = strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+        if ( $namespace ){
+            return $is_rest && strpos( $current_url['path'], $namespace ) != false;
+        } else {
+            return $is_rest;
+        }
     }
 }
 GO_Stats_Endpoints::instance();
