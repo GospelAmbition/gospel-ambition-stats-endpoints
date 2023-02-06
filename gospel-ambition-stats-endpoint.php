@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Gospel Ambition Stats Endpoint
+ * Plugin Name: Gospel Ambition - Stats Endpoint
  * Plugin URI: https://github.com/GospelAmbition/gospel-ambition-stats-endpoint
  * Description: Gospel Ambition Stats Endpoint
  * Text Domain: gospel-ambition-stats-endpoint
