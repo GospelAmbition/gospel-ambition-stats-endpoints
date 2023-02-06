@@ -32,11 +32,25 @@ class GO_Context_Switcher {
         require_once( 'globals/loader.php' );
 
         switch ( $site ) {
+
             case 'Prayer Global':
                 require_once( 'prayer_global/loader.php' );
                 break;
+
             case 'Vision':
                 require_once( 'zume_vision/loader.php' );
+                break;
+
+            case 'Pray4Movement':
+                require_once( 'pray4movement/loader.php' );
+                break;
+
+            case 'Kingdom Training':
+                require_once( 'kingdom_training/loader.php' );
+                break;
+
+            case 'Disciple.Tools':
+                require_once( 'disciple_tools/loader.php' );
                 break;
 
             default:

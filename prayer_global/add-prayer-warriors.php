@@ -6,7 +6,11 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     /**
      * Counting distinct hashes to get the number of unique prayer warriors
      */
-    $stats['prayer_warriors'] = $wpdb->get_var( "SELECT COUNT( DISTINCT hash) FROM $wpdb->dt_reports WHERE type = 'prayer_app';" );
+    $stats['prayer_warriors'] = [
+        'label' => 'Total Prayer Warriors',
+        'description' => 'The total number of unique prayer warriors.',
+        'value' => $wpdb->get_var( "SELECT COUNT( DISTINCT hash) FROM $wpdb->dt_reports WHERE type = 'prayer_app';" ),
+    ];
 
     return $stats;
 }, 10, 1 );

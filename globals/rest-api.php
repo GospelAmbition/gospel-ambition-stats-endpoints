@@ -3,7 +3,7 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
 class GO_Stats_Endpoints
 {
-    public $namespace = 'go-stats/v1';
+    public $namespace = 'go/v1';
     private static $_instance = null;
     public static function instance() {
         if ( is_null( self::$_instance ) ) {
@@ -21,7 +21,7 @@ class GO_Stats_Endpoints
         $namespace = $this->namespace;
 
         register_rest_route(
-            $namespace, '/endpoint', [
+            $namespace, '/stats', [
                 'methods'  => 'POST',
                 'callback' => [ $this, 'endpoint' ],
                 'permission_callback' => '__return_true'
@@ -39,7 +39,7 @@ class GO_Stats_Endpoints
 
 
     public function authorize_url( $authorized ){
-        if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), $this->namespace . '/endpoint' ) !== false ) {
+        if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), $this->namespace . '/stats' ) !== false ) {
             $authorized = true;
         }
         return $authorized;

@@ -7,8 +7,19 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
      */
     $option = get_option( 'pg_current_global_lap' );
     $current_lap_number = (int) $option['lap_number'];
+    $laps_completed = $current_lap_number - 1;
 
-    $stats['laps_completed'] = $current_lap_number - 1;
+    $stats['laps_completed'] = [
+        'label' => 'Laps Completed',
+        'description' => 'The total number of laps completed.',
+        'value' => $laps_completed,
+    ];
+
+    $stats['locations_completed_by_laps'] = [
+        'label' => 'Locations Covered by Laps',
+        'description' => 'The total number of locations covered in prayer from the previous laps.',
+        'value' => $laps_completed * 4770,
+    ];
 
     return $stats;
 }, 10, 1 );

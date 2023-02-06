@@ -6,3 +6,6 @@ Stats Endpoints. This plugin adds a few endpoints to your WordPress site that ca
 ![Plugin Banner](https://github.com/GospelAmbition/gospel-ambition-stats-endpoints/raw/master/documentation/ga-circle-bw.png)
 
 
+```angular2html
+{site}/wp-json/go/v1/stats
+```
