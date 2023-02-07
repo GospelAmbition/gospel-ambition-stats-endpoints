@@ -22,7 +22,7 @@ class GO_Stats_Endpoints
 
         register_rest_route(
             $namespace, '/stats', [
-                'methods'  => 'POST',
+                'methods'  => [ 'POST', 'GET' ],
                 'callback' => [ $this, 'endpoint' ],
                 'permission_callback' => '__return_true'
             ]
