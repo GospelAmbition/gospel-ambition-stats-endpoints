@@ -34,11 +34,11 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     ];
 
     $locations = [];
-    foreach( $campaigns as $campaign ) {
+    foreach ( $campaigns as $campaign ){
         $stats['minutes_of_prayer']['value'] += $campaign['minutes_committed'];
         $stats['prayer_warriors']['value'] += $campaign['prayers_count'];
-        foreach( $campaign['location_grid'] ?? [] as $location ) {
-            if ( !in_array( $location['country_id'], $locations ) ) {
+        foreach ( $campaign['location_grid'] ?? [] as $location ){
+            if ( !in_array( $location['country_id'], $locations ) ){
                 $locations[] = $location['country_id'];
             }
         }
