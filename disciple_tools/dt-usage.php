@@ -30,7 +30,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 
 
     $stats['all_time_instances'] = [
-        'label' => 'All Time Site',
+        'label' => 'All Time Sites',
         'description' => 'Total number of sites that have ever been created',
         'value' => $instances_stats['all_time']['sites'] ?? 0,
     ];
@@ -57,7 +57,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['theme_contributors'] = [
         'label' => 'Theme Contributors',
         'description' => 'Number of contributors to the theme',
-        'value' =>  $github['contributors'],
+        'value' => $github['contributors'],
     ];
     $stats['languages'] = [
         'label' => 'Languages',
