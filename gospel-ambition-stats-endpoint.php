@@ -31,6 +31,8 @@ class GO_Context_Switcher {
 
         require_once( 'globals/loader.php' );
 
+        require_once( 'assets/stats-pages.php' );
+
         switch ( $site ) {
 
             case 'Prayer Global':

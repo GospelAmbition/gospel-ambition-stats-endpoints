@@ -4,6 +4,10 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 add_filter( 'go_stats_endpoint', function( $stats ) {
     global $wpdb;
 
+    if ( !function_exists( 'p4m_get_all_campaigns' ) ){
+        return $stats;
+    }
+
     $campaigns = p4m_get_all_campaigns( true );
 
     /**
