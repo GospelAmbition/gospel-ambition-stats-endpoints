@@ -41,7 +41,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     ];
     $stats['active_instances'] = [
         'label' => 'Active Sites',
-        'description' => 'Number of sites with active users in the last 30 days',
+        'description' => 'Total known installs of Disciple.Tools with active users',
         'value' => $instances_stats['active']['sites'],
     ];
     $stats['total_domains'] = [
@@ -51,17 +51,17 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     ];
     $stats['active_domains'] = [
         'label' => 'Active Domains',
-        'description' => 'Number of domains with active users in the last 30 days',
+        'description' => 'Total known active domains hosting Disciple.Tools installs',
         'value' => $instances_stats['active']['domains'],
     ];
     $stats['theme_contributors'] = [
-        'label' => 'Theme Contributors',
-        'description' => 'Number of contributors to the theme',
+        'label' => 'Disciple.Tools Contributors',
+        'description' => 'Total coders who have contributed to creating the Disciple.Tools theme',
         'value' => $github['contributors'],
     ];
     $stats['languages'] = [
         'label' => 'Languages',
-        'description' => 'Number of languages the theme is translated into',
+        'description' => 'Total languages the core of Disciple.Tools is translated into',
         'value' => $translations_count ?? 0,
     ];
 
