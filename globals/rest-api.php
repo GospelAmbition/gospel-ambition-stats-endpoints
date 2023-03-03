@@ -32,9 +32,10 @@ class GO_Stats_Endpoints
         $stats = [
             'site_name' => get_bloginfo(),
             'stats_timestamp' => time(),
+            'stats' => apply_filters( 'go_stats_endpoint', [], get_bloginfo() ),
         ];
 
-        return apply_filters( 'go_stats_endpoint', $stats );
+        return $stats;
     }
 
 
