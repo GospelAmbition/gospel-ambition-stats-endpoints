@@ -55,7 +55,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'value' => $instances_stats['active']['domains'],
     ];
     $stats['theme_contributors'] = [
-        'label' => 'Disciple.Tools Contributors',
+        'label' => 'Contributors',
         'description' => 'Total coders who have contributed to creating the Disciple.Tools theme',
         'value' => $github['contributors'],
     ];
