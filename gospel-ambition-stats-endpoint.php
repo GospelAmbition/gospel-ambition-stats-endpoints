@@ -55,6 +55,10 @@ class GO_Context_Switcher {
                 require_once( 'disciple_tools/loader.php' );
                 break;
 
+            case 'Gospel Ambition':
+                require_once( 'gospel_ambition/loader.php' );
+                break;
+
             default:
                 return false;
         }
