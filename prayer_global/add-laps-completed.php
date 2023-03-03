@@ -13,6 +13,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'label' => 'Laps Completed',
         'description' => 'The total number of laps completed.',
         'value' => $laps_completed,
+        'public_stats' => true,
     ];
 
     $stats['locations_completed_by_laps'] = [

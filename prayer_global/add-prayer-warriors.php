@@ -10,6 +10,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'label' => 'Total Prayer Warriors',
         'description' => 'The total number of unique prayer warriors.',
         'value' => $wpdb->get_var( "SELECT COUNT( DISTINCT hash) FROM $wpdb->dt_reports WHERE type = 'prayer_app';" ),
+        'public_stats' => true,
     ];
 
     return $stats;
