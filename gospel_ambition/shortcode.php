@@ -6,7 +6,7 @@ if ( !function_exists( 'dt_cached_api_call' ) ){
         if ( !$use_cache || empty( $data ) ){
             if ( $type === 'GET' ){
                 $response = wp_remote_get( $url, $args );
-            } else{
+            } else {
                 $response = wp_remote_post( $url, $args );
             }
             if ( is_wp_error( $response ) || isset( $response['response']['code'] ) && $response['response']['code'] !== 200 ){
@@ -19,7 +19,6 @@ if ( !function_exists( 'dt_cached_api_call' ) ){
         return $data;
     }
 }
-
 
 
 function go_stats( $atts ){
