@@ -5,7 +5,7 @@
  * Description: Gospel Ambition Stats Endpoint
  * Text Domain: gospel-ambition-stats-endpoint
  * Domain Path: /languages
- * Version:  0.3
+ * Version:  2023.03.03
  * Author URI: https://github.com/GospelAmbition/gospel-ambition-stats-endpoint
  * GitHub Plugin URI: https://github.com/GospelAmbition/gospel-ambition-stats-endpoint
  * Requires at least: 4.7.0
