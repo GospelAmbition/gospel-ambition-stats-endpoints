@@ -1,8 +1,8 @@
-#main {
-    max-width:1000px;
+#go-stats {
+    /*max-width:1000px;*/
     padding: 20px;
-    margin:auto;
-    min-height: 100vh;
+    /*margin:auto;*/
+    /*min-height: 100vh;*/
 }
 .go-cards {
     display: flex;
@@ -37,4 +37,7 @@
     font-size: 2rem;
     margin-top: 10px;
     min-height: 30px;
+}
+.go-card-value {
+    padding: 10px 0;
 }
