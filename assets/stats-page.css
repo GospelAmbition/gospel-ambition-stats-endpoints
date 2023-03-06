@@ -41,3 +41,13 @@
 .go-card-value {
     padding: 10px 0;
 }
+.go-logo-icon {
+    height: 50px;
+    vertical-align: text-bottom;
+    padding-right: 10px;
+}
+
+#go-stats h2 {
+    padding-bottom: 30px;
+    margin-inline-start: 20px;
+}

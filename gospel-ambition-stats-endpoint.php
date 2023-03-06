@@ -26,6 +26,9 @@ class GO_Context_Switcher {
         }
         return self::$instance;
     }
+    public static function plugin_url( $path = '' ) {
+        return plugins_url( $path, __FILE__ );
+    }
     public function __construct(){
         $site = get_bloginfo();
 

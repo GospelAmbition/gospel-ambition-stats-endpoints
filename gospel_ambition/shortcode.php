@@ -43,9 +43,11 @@ function go_stats( $atts ){
     ?>
 
 
-        <div style="width:100%; max-width: 100% !important;">
+        <div id="go-stats" style="width:100%; max-width: 100% !important;">
 
-            <h2>Disciple.Tools Stats</h2>
+            <h2>
+                <img class="go-logo-icon" src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/dt-circle-logo.png' ) ) ?>"/>Disciple.Tools Stats
+            </h2>
 
             <div class='go-cards'>
                 <? foreach ( $dt_stats['stats'] as $stat ) :
@@ -53,7 +55,7 @@ function go_stats( $atts ){
                         <div class="go-card">
                             <div class="go-card-container">
                                 <h4 class="go-card-title"><? echo esc_html( $stat['label'] ) ?></h4>
-                                <p><strong><? echo esc_html( $stat['value'] ) ?></strong></p>
+                                <p class="go-card-value"><strong><? echo esc_html( $stat['value'] ) ?></strong></p>
                                 <p class="go-stat-desc"><? echo esc_html( $stat['description'] ?? '' ) ?></p>
                             </div>
                         </div>
@@ -64,14 +66,15 @@ function go_stats( $atts ){
             <br>
             <br>
 
-            <h2>Pray4movement Stats</h2>
+            <h2><img class='go-logo-icon'
+                src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/p4m-circle-logo.png' ) ) ?>"/>Pray4movement Stats</h2>
 
             <div class='go-cards'>
                 <? foreach ( $p4m_stats['stats'] as $stat ) : ?>
                     <div class="go-card">
                         <div class="go-card-container">
                             <h4 class="go-card-title"><? echo esc_html( $stat['label'] ) ?></h4>
-                            <p><strong><? echo esc_html( $stat['value'] ) ?></strong></p>
+                            <p class='go-card-value'><strong><? echo esc_html( $stat['value'] ) ?></strong></p>
                             <p class="go-stat-desc"><? echo esc_html( $stat['description'] ?? '' ) ?></p>
                         </div>
                     </div>
@@ -81,7 +84,9 @@ function go_stats( $atts ){
 
             <br>
             <br>
-            <h2>Prayer.Global Stats</h2>
+            <h2>
+                <img class='go-logo-icon'
+                     src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/pray-circle-logo.png' ) ) ?>"/>Prayer.Global Stats</h2>
 
 
             <div class='go-cards'>
@@ -90,7 +95,7 @@ function go_stats( $atts ){
                         <div class="go-card">
                             <div class="go-card-container">
                                 <h4 class="go-card-title"><? echo esc_html( $stat['label'] ) ?></h4>
-                                <p><strong><? echo esc_html( $stat['value'] ) ?></strong></p>
+                                <p class='go-card-value'><strong><? echo esc_html( $stat['value'] ) ?></strong></p>
                                 <p class="go-stat-desc"><? echo esc_html( $stat['description'] ?? '' ) ?></p>
                             </div>
                         </div>
@@ -101,14 +106,15 @@ function go_stats( $atts ){
             <br>
             <br>
 
-            <h2>Zúme Stats</h2>
+            <h2><img class='go-logo-icon'
+                     src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/zume-circle-logo.png' ) ) ?>"/>Zúme Stats</h2>
 
             <div class='go-cards'>
                 <? foreach ( $zume_stats['stats'] as $stat ) : ?>
                     <div class="go-card">
                         <div class="go-card-container">
                             <h4 class="go-card-title"><? echo esc_html( $stat['label'] ) ?></h4>
-                            <p><strong><? echo esc_html( $stat['value'] ) ?></strong></p>
+                            <p class='go-card-value'><strong><? echo esc_html( $stat['value'] ) ?></strong></p>
                             <p class="go-stat-desc"><? echo esc_html( $stat['description'] ?? '' ) ?></p>
                         </div>
                     </div>
