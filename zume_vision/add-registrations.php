@@ -27,13 +27,13 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['registrations_by_month'] = [
         'label' => 'Registrations by Month',
         'description' => 'The total number of registrations by month.',
-        'value' => $wpdb->get_results( "SELECT DATE_FORMAT(user_registered, '%Y-%m') as month, DATE_FORMAT(user_registered, '%M %Y') as month_formatted, COUNT(ID) as value FROM $wpdb->users GROUP BY DATE_FORMAT(user_registered, '%Y-%m'), DATE_FORMAT(user_registered, '%M %Y') ORDER BY DATE_FORMAT(user_registered, '%Y-%m') DESC;", ARRAY_A ),
+        'value' => $wpdb->get_results( "SELECT DATE_FORMAT(user_registered, '%Y-%m') as date, DATE_FORMAT(user_registered, '%M %Y') as label, COUNT(ID) as value FROM $wpdb->users GROUP BY DATE_FORMAT(user_registered, '%Y-%m'), DATE_FORMAT(user_registered, '%M %Y') ORDER BY DATE_FORMAT(user_registered, '%Y-%m') DESC;", ARRAY_A ),
     ];
 
     $stats['registrations_by_year'] = [
         'label' => 'Registrations by Year',
         'description' => 'The total number of registrations by year.',
-        'value' => $wpdb->get_results( "SELECT DATE_FORMAT(user_registered, '%Y') as year, COUNT(ID) as value FROM $wpdb->users GROUP BY DATE_FORMAT(user_registered, '%Y') ORDER BY DATE_FORMAT(user_registered, '%Y') DESC;", ARRAY_A ),
+        'value' => $wpdb->get_results( "SELECT DATE_FORMAT(user_registered, '%Y') as label, COUNT(ID) as value FROM $wpdb->users GROUP BY DATE_FORMAT(user_registered, '%Y') ORDER BY DATE_FORMAT(user_registered, '%Y') DESC;", ARRAY_A ),
     ];
 
     //    $stats['registrations_by_language'] = [
