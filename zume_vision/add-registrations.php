@@ -30,11 +30,11 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'value' => $wpdb->get_results( "SELECT DATE_FORMAT(user_registered, '%Y-%m') as month, DATE_FORMAT(user_registered, '%M %Y') as month_formatted, COUNT(ID) as value FROM $wpdb->users GROUP BY DATE_FORMAT(user_registered, '%Y-%m'), DATE_FORMAT(user_registered, '%M %Y');", ARRAY_A ),
     ];
 
-//    $stats['registrations_by_language'] = [
-//        'label' => 'Registrations by Language',
-//        'description' => 'The total number of registrations by language.',
-//        'value' => $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->users;" ),
-//    ];
+    //    $stats['registrations_by_language'] = [
+    //        'label' => 'Registrations by Language',
+    //        'description' => 'The total number of registrations by language.',
+    //        'value' => $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->users;" ),
+    //    ];
 
     return $stats;
 }, 10, 1 );
