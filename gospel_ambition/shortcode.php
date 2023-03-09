@@ -4,7 +4,7 @@
 
 function go_stats( $atts ){
 
-    $use_cache = true;
+    $use_cache = !isset( $_GET['nocache'] );
 
     $dt_stats = dt_cached_api_call( 'https://disciple.tools/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
     $dt_stats = json_decode( $dt_stats, true );
