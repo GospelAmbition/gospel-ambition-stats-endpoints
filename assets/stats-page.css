@@ -61,3 +61,8 @@
     padding-bottom: 30px;
     margin-inline-start: 20px;
 }
+
+#go-stats .go-card-array {
+    height:200px;
+    overflow-y: scroll;
+}

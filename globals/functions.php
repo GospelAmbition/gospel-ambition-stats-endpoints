@@ -30,15 +30,23 @@ function go_format_stat_value( $value ){
     return $value;
 }
 
-function go_display_cards( $stats ){
+function go_display_cards( $stats, $display_all = false ){
     ?>
     <div class='go-cards'>
         <? foreach ( $stats ?? [] as $stat ) :
-            if ( !empty( $stat['public_stats'] ) ) :?>
+            if ( !empty( $stat['public_stats'] ) || $display_all ) :?>
                 <div class="go-card">
                     <div class="go-card-container">
                         <h4 class="go-card-title"><? echo esc_html( $stat['label'] ) ?></h4>
-                        <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'] ) ); ?></p>
+                        <? if ( is_array( $stat['value'] ) ) : ?>
+                            <div class="go-card-array">
+                                <? foreach ( $stat['value'] as $value ) : ?>
+                                    <p><? echo esc_html( $value['label'] ?? '' ) ?> (<?php echo esc_html( $value['value'] ?? '' ); ?>)</p>
+                                <? endforeach; ?>
+                            </div>
+                        <? else : ?>
+                            <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'] ) ); ?></p>
+                        <? endif; ?>
                         <p class="go-stat-desc"><? echo esc_html( $stat['description'] ?? '' ) ?></p>
                     </div>
                 </div>

@@ -6,6 +6,8 @@ function go_stats( $atts ){
 
     $use_cache = !isset( $_GET['nocache'] );
 
+    $all_stats = isset( $_GET['all'] );
+
     $dt_stats = dt_cached_api_call( 'https://disciple.tools/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
     $dt_stats = json_decode( $dt_stats, true );
 
@@ -26,30 +28,33 @@ function go_stats( $atts ){
 
         <div id="go-stats" style="width:100%; max-width: 1340px">
 
+            <a href="?all=true" style="margin-bottom: 20px">Show all stats</a>
+
+
             <h2>
                 <img class="go-logo-icon" src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/dt-circle-logo.png' ) ) ?>"/>Disciple.Tools Stats
             </h2>
 
-            <?php go_display_cards( $dt_stats['stats'] ) ?>
+            <?php go_display_cards( $dt_stats['stats'], $all_stats ) ?>
 
 
             <h2><img class='go-logo-icon'
                 src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/p4m-circle-logo.png' ) ) ?>"/>Pray4movement Stats</h2>
 
-            <?php go_display_cards( $p4m_stats['stats'] ) ?>
+            <?php go_display_cards( $p4m_stats['stats'], $all_stats ) ?>
 
             <h2>
                 <img class='go-logo-icon'
                      src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/pray-circle-logo.png' ) ) ?>"/>Prayer.Global Stats</h2>
 
 
-            <?php go_display_cards( $pg_stats['stats'] ) ?>
+            <?php go_display_cards( $pg_stats['stats'], $all_stats ) ?>
 
 
             <h2><img class='go-logo-icon'
                      src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/zume-circle-logo.png' ) ) ?>"/>Zúme Stats</h2>
 
-            <?php go_display_cards( $zume_stats['stats'] ) ?>
+            <?php go_display_cards( $zume_stats['stats'], $all_stats ) ?>
         </div>
 
     <?php
