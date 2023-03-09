@@ -7,7 +7,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 
     $stats['countries_online'] = [
         'label' => 'Countries & Territories',
-        'description' => 'Total number of countries and sovereign territories that have accessed Zume.Training online',
+        'description' => 'Total number of countries and sovereign territories that have accessed Zume.Training online.',
         'value' => '',
         'public_stats' => true,
     ];

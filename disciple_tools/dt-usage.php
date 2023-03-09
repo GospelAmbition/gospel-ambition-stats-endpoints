@@ -31,40 +31,40 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 
     $stats['all_time_instances'] = [
         'label' => 'All Time Sites',
-        'description' => 'Total number of sites that have ever been created',
+        'description' => 'Total number of sites that have ever been created.',
         'value' => $instances_stats['all_time']['sites'] ?? 0,
     ];
     $stats['total_instances'] = [
         'label' => 'Online Sites',
-        'description' => 'Number of online sites in the last 30 days',
+        'description' => 'Number of online sites in the last 30 days.',
         'value' => $instances_stats['total']['sites'],
     ];
     $stats['active_instances'] = [
         'label' => 'Active Sites',
-        'description' => 'Total known installs of Disciple.Tools with active users',
+        'description' => 'Total known installs of Disciple.Tools with active users.',
         'value' => $instances_stats['active']['sites'],
         'public_stats' => true,
     ];
     $stats['total_domains'] = [
         'label' => 'Online Domains',
-        'description' => 'Number of online domains in the last 30 days',
+        'description' => 'Number of online domains in the last 30 days.',
         'value' => $instances_stats['total']['domains'],
     ];
     $stats['active_domains'] = [
         'label' => 'Active Domains',
-        'description' => 'Total known active domains hosting Disciple.Tools installs',
+        'description' => 'Total known active domains hosting Disciple.Tools installs.',
         'value' => $instances_stats['active']['domains'],
         'public_stats' => true,
     ];
     $stats['theme_contributors'] = [
         'label' => 'Contributors',
-        'description' => 'Total coders who have contributed to creating the Disciple.Tools theme',
+        'description' => 'Total coders who have contributed to creating the Disciple.Tools theme.',
         'value' => $github['contributors'],
         'public_stats' => true,
     ];
     $stats['languages'] = [
         'label' => 'Languages',
-        'description' => 'Total languages the core of Disciple.Tools is translated into',
+        'description' => 'Total languages the core of Disciple.Tools is translated into.',
         'value' => $translations_count ?? 0,
         'public_stats' => true,
     ];

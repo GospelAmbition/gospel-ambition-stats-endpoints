@@ -15,26 +15,30 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
      */
     $stats['minutes_of_prayer'] = [
         'label' => 'Total Prayer Time',
-        'description' => 'Total time committed to pray for all past and upcoming campaigns',
-        'value' => 0
+        'description' => 'Total time committed to pray for all past and upcoming campaigns.',
+        'value' => 0,
+        'public_stats' => true,
     ];
 
     $stats['campaigns'] = [
         'label' => 'Campaigns',
-        'description' => 'Total number of campaigns',
+        'description' => 'Total number of campaigns.',
         'value' => count( $campaigns ),
+        'public_stats' => true,
     ];
 
     $stats['prayer_warriors'] = [
         'label' => 'Campaign Intercessors',
         'description' => 'This number may be too high because some people may pray for multiple campaigns, or it may be too low because sometimes groups are praying together and we’re only counting them as individuals.',
-        'value' => 0
+        'value' => 0,
+        'public_stats' => true,
     ];
 
     $stats['locations'] = [
         'label' => 'Campaign Countries',
-        'description' => 'Countries with a campaign',
+        'description' => 'Countries with a campaign.',
         'value' => 0,
+        'public_stats' => alse,
     ];
 
     $locations = [];

@@ -19,4 +19,4 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     ];
 
     return $stats;
-}, 10, 1 );
+}, 9, 1 );
