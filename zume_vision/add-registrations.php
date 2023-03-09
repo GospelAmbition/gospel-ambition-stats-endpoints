@@ -5,9 +5,10 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     global $wpdb;
 
     $stats['registrations_total'] = [
-        'label' => 'Total Registrations',
-        'description' => 'The total number of registrations to the Zume.Training system.',
+        'label' => 'Registrations',
+        'description' => 'The total number of registrations in Zume.Training.',
         'value' => $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->users;" ),
+        'public_stats' => true,
     ];
 
     $twelve_months_ago = gmdate( 'Y-m-d', strtotime( '-12 months' ) );
