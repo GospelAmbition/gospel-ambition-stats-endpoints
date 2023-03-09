@@ -18,7 +18,7 @@
     transition: 0.3s;
     border-radius: 5px;
     /*margin: 10px;*/
-    flex-basis: 32%;
+    flex-basis: calc(100%/3 - (1 - 1/3)*25px);
 }
 @media only screen and (max-width: 768px) {
     .go-card {
@@ -39,6 +39,7 @@
 }
 .go-card-title {
     font-size: 1.4rem;
+    font-weight: bold;
     margin-top: 10px;
     min-height: 30px;
     padding-bottom: 10px;
