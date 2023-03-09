@@ -24,14 +24,14 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     ];
 
     $stats['registrations'] = [
-        'label' => 'Training Sessions',
+        'label' => 'Registrations',
         'description' => 'Number of users who have registered.',
         'value' => $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->users;" ) ?? '',
         'public_stats' => true,
     ];
 
     $stats['courses_complete'] = [
-        'label' => 'Courses Completed',
+        'label' => 'Course Completed',
         'description' => 'Total courses completed by users.',
         'value' => $courses_completed ?? '',
         'public_stats' => true,
