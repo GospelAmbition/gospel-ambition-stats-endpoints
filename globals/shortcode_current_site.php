@@ -8,6 +8,7 @@ function go_display_stats( $atts ){
 
     $stats_data = get_transient( 'dt-stats' );
     if ( empty( $stats_data ) || !$use_cache ) {
+        $site_info = apply_filters( 'go_site_info', [] );
         $stats_data = [
             'stats' => apply_filters( 'go_stats_endpoint', [] ),
             'time' => time(),
@@ -24,9 +25,7 @@ function go_display_stats( $atts ){
 
         <div id="go-stats">
 
-            <h2>
-                <img class="go-logo-icon" src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/dt-circle-logo.png' ) ) ?>"/>Disciple.Tools Stats
-            </h2>
+            <?php go_display_site( $site_info ) ?>
 
             <?php go_display_cards( $stats_data["stats"] ) ?>
 

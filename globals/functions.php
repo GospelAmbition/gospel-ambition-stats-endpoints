@@ -47,3 +47,13 @@ function go_display_cards( $stats ){
     </div>
     <?php
 }
+
+
+function go_display_site( $site ){
+    ?>
+    <h2>
+        <img class='go-logo-icon' src="<?php echo esc_html( $site['icon']  ) ?>"/><?php echo esc_html( $site['site_name'] ); ?> Stats
+    </h2>
+    <?php
+}
+

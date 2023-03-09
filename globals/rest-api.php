@@ -29,11 +29,11 @@ class GO_Stats_Endpoints
         );
     }
     public function endpoint( WP_REST_Request $request ) {
-        $stats = [
+        $stats = apply_filters( 'go_site_info', [
             'site_name' => get_bloginfo(),
             'stats_timestamp' => time(),
             'stats' => apply_filters( 'go_stats_endpoint', [], get_bloginfo() ),
-        ];
+        ] );
 
         return $stats;
     }
