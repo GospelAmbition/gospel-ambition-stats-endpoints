@@ -14,10 +14,10 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
      * Counting number of minutes of prayer as indicated by the value column
      */
     $stats['minutes_of_prayer'] = [
-        'label' => 'Total Prayer Time',
+        'label' => 'Campaigns Prayer Time',
         'description' => 'Total time committed to pray for all past and upcoming campaigns.',
         'value' => 0,
-        'public_stats' => true,
+        'public_stats' => false,
     ];
 
     $stats['campaigns'] = [
@@ -31,7 +31,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'label' => 'Campaign Intercessors',
         'description' => 'This number may be too high because some people may pray for multiple campaigns, or it may be too low because sometimes groups are praying together and we’re only counting them as individuals.',
         'value' => 0,
-        'public_stats' => true,
+        'public_stats' => false,
     ];
 
     $stats['locations'] = [
