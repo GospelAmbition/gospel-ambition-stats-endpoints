@@ -38,7 +38,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'label' => 'Campaign Countries',
         'description' => 'Countries with a campaign.',
         'value' => 0,
-        'public_stats' => alse,
+        'public_stats' => false,
     ];
 
     $locations = [];
