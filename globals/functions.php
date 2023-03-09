@@ -38,7 +38,7 @@ function go_display_cards( $stats ){
                 <div class="go-card">
                     <div class="go-card-container">
                         <h4 class="go-card-title"><? echo esc_html( $stat['label'] ) ?></h4>
-                        <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value']) ); ?></p>
+                        <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'] ) ); ?></p>
                         <p class="go-stat-desc"><? echo esc_html( $stat['description'] ?? '' ) ?></p>
                     </div>
                 </div>
@@ -52,7 +52,7 @@ function go_display_cards( $stats ){
 function go_display_site( $site ){
     ?>
     <h2>
-        <img class='go-logo-icon' src="<?php echo esc_html( $site['icon']  ) ?>"/><?php echo esc_html( $site['site_name'] ); ?> Stats
+        <img class='go-logo-icon' src="<?php echo esc_html( $site['icon'] ) ?>"/><?php echo esc_html( $site['site_name'] ); ?> Stats
     </h2>
     <?php
 }
