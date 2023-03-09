@@ -34,11 +34,11 @@
     padding: 16px;
 }
 .go-stat-desc {
-    font-size: 0.7em;
+    font-size: 14px;
     color: #666;
 }
 .go-card-title {
-    font-size: 1.3em;
+    font-size: 25px;
     font-weight: bold;
     margin-top: 10px;
     min-height: 30px;
@@ -48,7 +48,7 @@
 .go-card-value {
     padding: 10px 0;
     font-weight: bold;
-    font-size: 1.3em;
+    font-size: 25px;
 }
 #go-stats img.go-logo-icon {
     height: 50px;
