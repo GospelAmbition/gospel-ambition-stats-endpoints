@@ -43,6 +43,7 @@ class GO_Context_Switcher {
                 break;
 
             case 'Vision':
+            case 'Zúme Training':
                 require_once( 'zume_vision/loader.php' );
                 break;
 
