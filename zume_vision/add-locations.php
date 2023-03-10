@@ -8,14 +8,14 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['countries_online'] = [
         'label' => 'Countries & Territories',
         'description' => 'Total number of countries and sovereign territories that have accessed Zume.Training online.',
-        'value' => '',
+        'value' => '234 (March 2023)',
         'public_stats' => true,
     ];
 
     $stats['countries_with_groups'] = [
         'label' => 'Countries & Territories with Groups',
         'description' => 'Total number of countries and sovereign territories that have had groups go through Zume.Training',
-        'value' => '',
+        'value' => '156 (March 2023)',
         'public_stats' => true,
     ];
 
