@@ -12,14 +12,14 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['trainees'] = [
         'label' => 'Lab M2M Trainees',
         'description' => 'Total number of trainees who have gone through the multi-day training on media-to-movements.',
-        'value' => '321 (hard coded)',
+        'value' => '321 (March 2023)',
         'public_stats' => true,
     ];
 
     $stats['sessions'] = [
         'label' => 'Training Sessions',
         'description' => 'Total number of online training sessions delivered primarily to unregistered users.',
-        'value' => '',
+        'value' => '7961 (March 2023)',
         'public_stats' => true,
     ];
 
