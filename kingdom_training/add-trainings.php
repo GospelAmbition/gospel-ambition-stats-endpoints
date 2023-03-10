@@ -4,9 +4,9 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 add_filter( 'go_stats_endpoint', function( $stats ) {
     global $wpdb;
 
-    $courses_completed = $wpdb->get_var( "SELECT COUNT(*) FROM wp_learndash_user_activity WHERE `activity_completed` > 0" );
+    $courses_completed = $wpdb->get_var( 'SELECT COUNT(*) FROM wp_learndash_user_activity WHERE `activity_completed` > 0' );
 
-    $users_course_completed = $wpdb->get_var( "SELECT COUNT(DISTINCT(user_id)) FROM wp_learndash_user_activity WHERE `activity_completed` > 0" );
+    $users_course_completed = $wpdb->get_var( 'SELECT COUNT(DISTINCT(user_id)) FROM wp_learndash_user_activity WHERE `activity_completed` > 0' );
 
 
     $stats['trainees'] = [
