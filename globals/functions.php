@@ -30,6 +30,13 @@ function go_format_stat_value( $value ){
     return $value;
 }
 
+function go_display_stats_icon( $stat ){
+    if ( !empty( $stat['icon'] ) ){
+        echo '<span class="go-stats-icon ' . esc_html( $stat['icon'] ) . '"></span>';
+    }
+    return '';
+}
+
 function go_display_cards( $stats, $display_all = false ){
     ?>
     <div class='go-cards'>
@@ -37,7 +44,10 @@ function go_display_cards( $stats, $display_all = false ){
             if ( !empty( $stat['public_stats'] ) || $display_all ) :?>
                 <div class="go-card">
                     <div class="go-card-container">
-                        <h4 class="go-card-title"><? echo esc_html( $stat['label'] ) ?></h4>
+                        <h4 class="go-card-title">
+                            <?php go_display_stats_icon( $stat ) ?>
+                            <? echo esc_html( $stat['label'] ) ?>
+                        </h4>
                         <? if ( is_array( $stat['value'] ) ) : ?>
                             <div class="go-card-array">
                                 <? foreach ( $stat['value'] as $value ) : ?>

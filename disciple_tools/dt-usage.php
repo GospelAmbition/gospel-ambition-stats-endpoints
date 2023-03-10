@@ -44,6 +44,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'description' => 'Total known installs of Disciple.Tools with active users.',
         'value' => $instances_stats['active']['sites'],
         'public_stats' => true,
+        'icon' => 'mdi mdi-web'
     ];
     $stats['total_domains'] = [
         'label' => 'Online Domains',
@@ -55,24 +56,28 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'description' => 'Total known active domains hosting Disciple.Tools installs.',
         'value' => $instances_stats['active']['domains'],
         'public_stats' => true,
+        'icon' => 'mdi mdi-sitemap',
     ];
     $stats['theme_contributors'] = [
         'label' => 'Contributors',
         'description' => 'Total coders who have contributed to creating the Disciple.Tools theme.',
         'value' => $github['contributors'],
         'public_stats' => true,
+        'icon' => 'mdi mdi-xml',
     ];
     $stats['languages'] = [
         'label' => 'Languages',
         'description' => 'Total languages the core of Disciple.Tools is translated into.',
         'value' => $translations_count ?? 0,
         'public_stats' => true,
+        'icon' => 'mdi mdi-translate',
     ];
     $stats['kingdom_savings'] = [
         'label' => 'Kingdom Savings',
         'description' => 'Cost Difference between Disciple.Tools (hosting) and two prominent alternative softwares for 1000 users.',
         'value' => '$120,000 to $780,000 annually',
         'public_stats' => true,
+        'icon' => 'mdi mdi-hand-coin',
     ];
 
 
