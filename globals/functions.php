@@ -70,7 +70,7 @@ function go_display_cards( $stats, $display_all = false ){
 function go_display_site( $site ){
     ?>
     <h2>
-        <img class='go-logo-icon' src="<?php echo esc_html( $site['icon'] ) ?>"/><?php echo esc_html( $site['site_name'] ); ?> Stats
+        <img class='go-logo-icon' src="<?php echo esc_html( $site['icon'] ) ?>"/><?php echo esc_html( $site['site_name'] ?? '' ); ?> Stats
     </h2>
     <?php
 }
