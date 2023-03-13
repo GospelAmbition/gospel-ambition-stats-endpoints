@@ -36,15 +36,11 @@ function go_stats( $atts ){
             </div>
 
 
-            <h2>
-                <img class="go-logo-icon" src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/dt-circle-logo.png' ) ) ?>"/>Disciple.Tools Stats
-            </h2>
+            <?php go_display_site( $dt_stats ) ?>
 
             <?php go_display_cards( $dt_stats['stats'] ?? [], $all_stats ) ?>
 
-
-            <h2><img class='go-logo-icon'
-                src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/p4m-circle-logo.png' ) ) ?>"/>Pray4movement Stats</h2>
+            <?php go_display_site( $p4m_stats ) ?>
 
             <?php go_display_cards( $p4m_stats['stats'], $all_stats ) ?>
 
@@ -57,9 +53,7 @@ function go_stats( $atts ){
                 <?php go_display_cards( $pg_stats['stats'], $all_stats ) ?>
             <?php endif; ?>
 
-
-            <h2><img class='go-logo-icon'
-                     src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/zume-circle-logo.png' ) ) ?>"/>Zúme Stats</h2>
+            <?php go_display_site( $zume_stats ) ?>
 
             <?php go_display_cards( $zume_stats['stats'], $all_stats ) ?>
 
