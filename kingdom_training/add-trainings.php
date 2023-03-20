@@ -8,6 +8,12 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 
     $users_course_completed = $wpdb->get_var( 'SELECT COUNT(DISTINCT(user_id)) FROM wp_learndash_user_activity WHERE `activity_completed` > 0' );
 
+    $stats['introductions'] = [
+        'label' => 'Introductions',
+        'description' => 'Total number of people we’ve introduced to media-to-movements as a concept through various conferences, meetings, and events.',
+        'value' => 'Thousands',
+        'public_stats' => true,
+    ];
 
     $stats['trainees'] = [
         'label' => 'Lab M2M Trainees',
