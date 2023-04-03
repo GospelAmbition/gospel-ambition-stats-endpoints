@@ -7,7 +7,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['languages'] = [
         'label' => 'Languages',
         'description' => 'Total number of Zume.Training languages, spoken by billions.',
-        'value' => '43',
+        'value' => '53',
         'public_stats' => true,
     ];
 
