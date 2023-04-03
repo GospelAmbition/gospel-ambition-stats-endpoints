@@ -7,6 +7,8 @@ function go_display_stats( $atts ){
     $use_cache = !isset( $_GET['nocache'] );
     $all_stats = isset( $_GET['all'] );
 
+    $use_cache = false;
+
     $stats_data = get_transient( 'dt-stats' );
     if ( empty( $stats_data ) || !$use_cache ) {
         $stats_data = [
