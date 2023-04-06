@@ -62,15 +62,20 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 }, 10, 1 );
 
 function ga4_fetch_kingdom_training_metrics(){
+    $site_key = 'kingdom_training';
     $metrics = [];
     $dependency_autoload_file = get_template_directory() . '/vendor/autoload.php';
-    $credentials = get_option( 'ga_ga4_service_account_credentials', [] );
+    $credentials = get_option( 'ga_ga4_service_accounts', [] )[$site_key]['credentials'] ?? [];
     $properties = get_option( 'ga_ga4_service_account_properties', [] );
-    if ( !empty( $credentials ) && !empty( $properties['kingdom_training'] ) && file_exists( $dependency_autoload_file ) ){
+    $date_ranges = get_option( 'ga_ga4_service_account_date_ranges', [] );
+    if ( !empty( $credentials ) && !empty( $properties[$site_key] ) && file_exists( $dependency_autoload_file ) ){
 
         require_once $dependency_autoload_file;
 
         try{
+
+            // Ensure to decode private_key.
+            $credentials['private_key'] = base64_decode( $credentials['private_key'] );
 
             // Create a GA4 Analytic Data Client instance; based on loaded credentials.
             $client = new BetaAnalyticsDataClient( [
@@ -79,22 +84,22 @@ function ga4_fetch_kingdom_training_metrics(){
 
             // Run training session report.
             $response = $client->runReport( [
-                'property' => 'properties/' . $properties['kingdom_training'],
+                'property' => 'properties/' . $properties[$site_key],
                 'dateRanges' => [
-                    new DateRange( [ // TODO: TBC - Date range to be made configurable or hardcoded?
-                        'start_date' => '2023-03-01',
-                        'end_date' => '2023-03-31',
+                    new DateRange( [
+                        'start_date' => $date_ranges[$site_key]['start_date'] ?? date( 'Y-m-d', time() ),
+                        'end_date' => $date_ranges[$site_key]['end_date'] ?? date( 'Y-m-d', time() )
                     ] ),
                 ],
                 'dimensions' => [ new Dimension(
                     [
-                        'name' => 'pagePath',
+                        'name' => 'pagePath'
                     ]
                 ),
                 ],
                 'metrics' => [ new Metric(
                     [
-                        'name' => 'engagedSessions',
+                        'name' => 'engagedSessions'
                     ]
                 )
                 ]
@@ -115,7 +120,7 @@ function ga4_fetch_kingdom_training_metrics(){
             $metrics['total_training_sessions'] = $total_training_sessions;
 
         } catch (Exception $e){
-            error_log( print_r( $e, true ) );
+            error_log( print_r( $e->getMessage(), true ) );
         }
 
     } else{

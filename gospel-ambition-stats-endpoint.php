@@ -33,11 +33,9 @@ class GO_Context_Switcher {
         $site = get_bloginfo();
 
         require_once( 'globals/loader.php' );
-
         require_once( 'assets/stats-pages.php' );
-
-        self::ga4_handle_credentials();
-        self::ga4_handle_properties();
+        require_once( 'admin/menu/menu-gospel-ambition.php' );
+        require_once( 'admin/menu/tabs/tab-google-analytics.php' );
 
         switch ( $site ) {
 
@@ -70,73 +68,6 @@ class GO_Context_Switcher {
                 return false;
         }
         return false;
-    }
-
-    private function ga4_handle_credentials(): void{
-        $credentials = get_option( 'ga_ga4_service_account_credentials', [] );
-        if ( empty( $credentials ) ){
-
-            // Build and store GA4 service account credentials to be used.
-            // TODO: Source from environmental variable or manually insert into db option table!
-            //  - As not too keen on hard-coding private key within code!
-            $credentials = [
-                'type' => 'service_account',
-                'project_id' => 'zume-project',
-                'private_key_id' => '8588b84474ae20c5b371a6fbba74a311dceac2df',
-                'private_key' => '-----BEGIN PRIVATE KEY-----
-MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCsSG3Sqgv0hafh
-+d5SuvFtUkW3FGSClWBaALEKk7KrYm02bCfcTdifnOvDClrb9XXdB835QUyVzXid
-taUX+KaUhL/shmDf9kgCM1xyZMQNsX8L7cgxf3m27dyzgqf50W8qAr9cLMOJ1yzx
-IQsS16ldppuLjBDoGuZDyDRfWooMJ1+WhytYOOP3dHUqywC3BSJe6pcOnYwtojgn
-/qmB/smhmSANH+Tx7YnO04fg2C+nny5t6gXrega3cOGjSFRj6hDCaVjfyc42RStE
-SodaJScR58UdunAVjT5CzXwHbwwKi8ynqKhJq6VrKKmJtsZtcJS2nXwbS5MEWx0c
-2Oyip4WTAgMBAAECggEAFwuz79OMuITjKY4BzhHxFwKZDh3Njs+UjUrnuSvQtq76
-lPvFc+l7P2lU+vN4+/t1whS32iPWBCPxgoc4h7Wx8s60gwXmvOQg9cpmZMGonXxP
-gQpUa+qgHsxAEvM4rROgSdUG7A7riUDIuOixUS/wGUr0JlKc4FouJdsIxnNCDCXv
-yzsfTxtLM90s7rpD6/E6Tf5lU3Uyz/17qyMvH1pQcDt5qCOOaCbHUCdlCc4g692J
-ur4Sa2knGeMiLHvr1HK/ciGAp32YgtgHR5YxZKKf5FEbFNOjuplkfqNaa62M2BWS
-k02BvqxZAL2OAhRZdjgEO5V7ItIxI/Bl5PAwoxmvwQKBgQDkxZgvRIkpZmhGPAbB
-QU7QuOnGnhUutanZHjNK1JgJDAlhyzgM/see26hwmZ30COBr1uChH5TZHLN/W6Cy
-JXPsXUUoC0PWHpyoI7mvG2H/Q9BB2Ft3XS80NjtEOwescYGaSiBtpVxEQfNaSLus
-Nv6/DoSUHo4DAAWNMFnY6NZKOQKBgQDAya8sXpmVwiJQdXepnGtXePkz53v+yDUU
-2SihxErXe1JTbhnNGGngKDJ0LpEYjxlk3UgpnEA2ql2P7F47P8mzVw7Zx9exwycb
-YC6fAWZRdTZUBl86VrlAmL4vGu/xhMz9lRcrS8mvWa+aaOYNQAS+dnuHJW2XKGHj
-3k1Pgyl+KwKBgQCasCk5PORqA/7aDtiacCh05bPdQyMblGamks8n+BxdcbAeWiUq
-VFRyTCDXEmhFjIMDKCZ3jD0/mTKeGTzNeJmr511NuGBENirDXnS9vIxE6Hu3Ki6e
-xXmXmlv0xN1pcs6pnxnSSg/bb6S3FZsg1YbndU+cQBTSXn9ieqEmFDphsQKBgQCc
-AVjwlajBCDTOWRA5P2uZgDpgpxyuwwI5WbVImlhZ4OBwxPK6Bdx/WOfjHl+puPq6
-pVok2d0Yn2pQ8dwbI/YrWvKYht/jaGF4BLAVWYObvTb2baWXxt/oBvI3mhu6nFVp
-isER9yVA8VlpoSMwa7KrEaPKbB4vqKz2QUjcY+4quwKBgHwh0znUN+3bDw+wd3Tk
-KXkMvySL5Pw5wRXJL6bBxJqrh1aSDRUsFtdYonl1rNrpd1Hsavi1HN6ZTZ0OcMrQ
-/gI0Zite3UsRF254pT82UhqhoWsByondjKAli+xIpOdMbgZ+L/7PRKltu43xvlIP
-jSnSP3e7qHcW0uU4loVT5dWR
------END PRIVATE KEY-----
-',
-                'client_email' => 'impactometers@zume-project.iam.gserviceaccount.com',
-                'client_id' => '102953997316344064913',
-                'auth_uri' => 'https://accounts.google.com/o/oauth2/auth',
-                'token_uri' => 'https://oauth2.googleapis.com/token',
-                'auth_provider_x509_cert_url' => 'https://www.googleapis.com/oauth2/v1/certs',
-                'client_x509_cert_url' => 'https://www.googleapis.com/robot/v1/metadata/x509/impactometers%40zume-project.iam.gserviceaccount.com'
-            ];
-            add_option( 'ga_ga4_service_account_credentials', $credentials );
-        }
-    }
-
-    private function ga4_handle_properties(): void{
-        $properties = get_option( 'ga_ga4_service_account_properties', [] );
-        if ( empty( $properties ) ){
-            $properties = [
-                'prayer_global' => '',
-                'vision' => '',
-                'zume_training' => '354575475',
-                'pray_4_movement' => '',
-                'kingdom_training' => '315303779',
-                'disciple_tools' => '',
-                'gospel_ambition' => ''
-            ];
-            add_option( 'ga_ga4_service_account_properties', $properties );
-        }
     }
 }
 
