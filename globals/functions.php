@@ -72,7 +72,7 @@ function go_display_site( $site ){
     <h2>
         <img class='go-logo-icon' src="<?php echo esc_html( $site['icon'] ) ?>"/><?php echo esc_html( $site['site_name'] ?? '' ); ?> Stats
     </h2>
-    <?php if (!empty( $site['site_description'])) : ?>
+    <?php if ( !empty( $site['site_description'] ) ) : ?>
         <p class="site-description">
         <?php
             $url = '@(http)?(s)?(://)?(([a-zA-Z])([-\w]+\.)+([^\s\.]+[^\s]*)+[^,.\s])@';
@@ -80,7 +80,6 @@ function go_display_site( $site ){
             echo nl2br( wp_kses_post( $site['site_description'] ) );
         ?>
         </p>
-    <?php
-    endif;
+    <?php endif;
 }
 

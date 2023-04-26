@@ -69,7 +69,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'label' => 'Languages',
         'description' => 'Total languages the core of Disciple.Tools is translated into.',
         'value' => 51,
-//        'value' => $translations_count ?? 0,
+        //'value' => $translations_count ?? 0,
         'public_stats' => true,
         'icon' => 'mdi mdi-translate',
     ];
