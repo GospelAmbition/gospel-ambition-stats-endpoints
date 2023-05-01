@@ -10,8 +10,6 @@ function go_stats( $atts ){
 
     $projects = GO_Sats::get_all_projects( $use_cache );
 
-    GO_Sats::save_stats_snapshot();
-
     ob_start();
     ?>
 

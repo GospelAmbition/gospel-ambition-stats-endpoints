@@ -46,7 +46,7 @@ class GO_Sats {
         ];
     }
 
-    public static function save_stats_snapshot(){
+    public function save_stats_snapshot(){
         global $wpdb;
 
         $projects = self::get_all_projects( true );
