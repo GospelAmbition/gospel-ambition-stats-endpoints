@@ -15,9 +15,10 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
      */
     $stats['minutes_of_prayer'] = [
         'label' => 'Campaigns Prayer Time',
-        'description' => 'Total minutes committed to pray for all past and upcoming campaigns.',
+        'description' => 'Total time committed to pray for all past and upcoming campaigns.',
         'value' => 0,
         'public_stats' => false,
+        'type' => 'minutes'
     ];
 
     $stats['campaigns'] = [
