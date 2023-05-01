@@ -19,8 +19,9 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['p4m_pg_prayer_time'] = [
         'label' => 'Prayer Time',
         'description' => 'Total time committed to pray for all past and upcoming prayer campaigns + Prayer.Global prayer time.',
-        'value' => go_display_minutes( $stats['minutes_of_prayer']['value'] + $pg_stats['minutes_of_prayer']['value'] ?? 0 ),
+        'value' => $stats['minutes_of_prayer']['value'] + ( $pg_stats['minutes_of_prayer']['value'] ?? 0 ),
         'public_stats' => true,
+        'type' => 'minutes',
     ];
 
     $stats['pg_laps_completed'] = [

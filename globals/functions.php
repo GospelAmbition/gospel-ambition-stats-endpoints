@@ -20,9 +20,12 @@ if ( !function_exists( 'dt_cached_api_call' ) ){
         return $data;
     }
 }
-function go_format_stat_value( $value ){
+function go_format_stat_value( $value, $type = null ){
     if ( empty( $value ) ){
         return 'Coming Soon';
+    }
+    if ( $type === 'minutes' ){
+        return go_display_minutes( $value );
     }
     if ( is_numeric( $value ) ){
         return number_format( $value );
@@ -55,7 +58,7 @@ function go_display_cards( $stats, $display_all = false ){
                                 <? endforeach; ?>
                             </div>
                         <? else : ?>
-                            <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'] ) ); ?>
+                            <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'], $stat['type'] ?? null ) ); ?>
                             <?php if ( !empty( $stat['note'] ) ) : ?>
                                 <span class="go-card-note"><?php echo esc_html( $stat['note'] ); ?></span>
                             <?php endif; ?>

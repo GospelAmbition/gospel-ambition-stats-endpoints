@@ -8,14 +8,10 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
      */
     $minutes = $wpdb->get_var( "SELECT SUM(value) FROM $wpdb->dt_reports WHERE type = 'prayer_app';" );
     $stats['minutes_of_prayer'] = [
-        'label' => 'Total Minutes of Prayer',
-        'description' => 'The total number of minutes of prayer regardless of location.',
-        'value' => $minutes,
-    ];
-    $stats['prayer_time'] = [
         'label' => 'Total Prayer Time',
         'description' => 'The total time of prayer regardless of location.',
-        'value' => go_display_minutes( $minutes ),
+        'value' => $minutes,
+        'type' => 'minutes',
         'public_stats' => true,
     ];
 

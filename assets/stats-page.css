@@ -50,6 +50,11 @@
     font-weight: bold;
     font-size: 25px;
 }
+#go-stats .go-card-note {
+    font-size: 14px;
+    color: #666;
+}
+
 #go-stats img.go-logo-icon {
     height: 50px;
     vertical-align: text-bottom;
