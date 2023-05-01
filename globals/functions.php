@@ -55,7 +55,11 @@ function go_display_cards( $stats, $display_all = false ){
                                 <? endforeach; ?>
                             </div>
                         <? else : ?>
-                            <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'] ) ); ?></p>
+                            <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'] ) ); ?>
+                            <?php if ( !empty( $stat['note'] ) ) : ?>
+                                <span class="go-card-note"><?php echo esc_html( $stat['note'] ); ?></span>
+                            <?php endif; ?>
+                            </p>
                         <? endif; ?>
                         <p class="go-stat-desc"><? echo esc_html( $stat['description'] ?? '' ) ?></p>
                     </div>

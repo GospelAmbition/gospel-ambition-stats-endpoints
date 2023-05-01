@@ -14,7 +14,8 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['training_sessions'] = [
         'label' => 'Training Sessions',
         'description' => 'Total number of online training sessions delivered primarily to unregistered users.',
-        'value' => '929,000 (March 2023)',
+        'value' => '929000',
+        'note' => '(March 2023)',
         'public_stats' => true,
     ];
 
