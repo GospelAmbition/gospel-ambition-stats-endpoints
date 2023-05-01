@@ -6,24 +6,11 @@ function go_stats( $atts ){
 
     $use_cache = !isset( $_GET['nocache'] );
 
-    $all_stats = isset( $_GET['all'] );
+    $display_all_stats = isset( $_GET['all'] );
 
-    $dt_stats = dt_cached_api_call( 'https://disciple.tools/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
-    $dt_stats = json_decode( $dt_stats, true );
+    $projects = GO_Sats::get_all_projects( $use_cache );
 
-    $p4m_stats = dt_cached_api_call( 'https://pray4movement.org/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
-    $p4m_stats = json_decode( $p4m_stats, true );
-    $p4m_stats['stats']['minutes_of_prayer']['value'] = go_display_minutes( $p4m_stats['stats']['minutes_of_prayer']['value'] );
-
-    $pg_stats = dt_cached_api_call( 'https://prayer.global/wp-json/go/v1/stats?', 'GET', [], HOUR_IN_SECONDS, $use_cache );
-    $pg_stats = json_decode( $pg_stats, true );
-
-    $zume_stats = dt_cached_api_call( 'https://zume.vision/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
-    $zume_stats = json_decode( $zume_stats, true );
-
-    $kt_stats = dt_cached_api_call( 'https://kingdom.training/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
-    $kt_stats = json_decode( $kt_stats, true );
-
+    GO_Sats::save_stats_snapshot();
 
     ob_start();
     ?>
@@ -36,30 +23,30 @@ function go_stats( $atts ){
             </div>
 
 
-            <?php go_display_site( $dt_stats ) ?>
+            <?php go_display_site( $projects['disciple_tools'] ) ?>
 
-            <?php go_display_cards( $dt_stats['stats'] ?? [], $all_stats ) ?>
+            <?php go_display_cards( $projects['disciple_tools']['stats'] ?? [], $display_all_stats ) ?>
 
-            <?php go_display_site( $p4m_stats ) ?>
+            <?php go_display_site( $projects['pray4movement'] ) ?>
 
-            <?php go_display_cards( $p4m_stats['stats'], $all_stats ) ?>
+            <?php go_display_cards( $projects['pray4movement']['stats'], $display_all_stats ) ?>
 
-            <?php if ( $all_stats ) : ?>
+            <?php if ( $display_all_stats ) : ?>
                 <h2>
                 <img class='go-logo-icon'
                      src="<?php echo esc_html( GO_Context_Switcher::plugin_url( '/assets/icons/pray-circle-logo.png' ) ) ?>"/>Prayer.Global Stats</h2>
 
 
-                <?php go_display_cards( $pg_stats['stats'], $all_stats ) ?>
+                <?php go_display_cards( $projects['prayer_global']['stats'], $display_all_stats ) ?>
             <?php endif; ?>
 
-            <?php go_display_site( $zume_stats ) ?>
+            <?php go_display_site( $projects['zume_training'] ) ?>
 
-            <?php go_display_cards( $zume_stats['stats'], $all_stats ) ?>
+            <?php go_display_cards( $projects['zume_training']['stats'], $display_all_stats ) ?>
 
-            <?php go_display_site( $kt_stats ) ?>
+            <?php go_display_site( $projects['kingdom_training'] ) ?>
 
-            <?php go_display_cards( $kt_stats['stats'], $all_stats ) ?>
+            <?php go_display_cards( $projects['kingdom_training']['stats'], $display_all_stats ) ?>
         </div>
 
     <?php
