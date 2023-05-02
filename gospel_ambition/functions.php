@@ -75,3 +75,4 @@ class GO_Sats {
         }
     }
 }
+new GO_Sats();
