@@ -30,7 +30,7 @@ class GO_Sats {
         $pg_stats = dt_cached_api_call( 'https://prayer.global/wp-json/go/v1/stats?', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $pg_stats = json_decode( $pg_stats, true );
 
-        $zume_stats = dt_cached_api_call( 'https://zume.training/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
+        $zume_stats = dt_cached_api_call( 'https://zume.training/wp-json/go/v1/dt-public/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $zume_stats = json_decode( $zume_stats, true );
 
         $kt_stats = dt_cached_api_call( 'https://kingdom.training/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );

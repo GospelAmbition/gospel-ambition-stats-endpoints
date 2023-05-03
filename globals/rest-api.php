@@ -27,6 +27,13 @@ class GO_Stats_Endpoints
                 'permission_callback' => '__return_true'
             ]
         );
+        register_rest_route(
+            $namespace . '/dt-public', '/stats', [
+                'methods'  => [ 'POST', 'GET' ],
+                'callback' => [ $this, 'endpoint' ],
+                'permission_callback' => '__return_true'
+            ]
+        );
     }
     public function endpoint( WP_REST_Request $request ) {
         $stats = apply_filters( 'go_site_info', [
