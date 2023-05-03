@@ -12,7 +12,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     ];
 
     $stats['training_sessions'] = [
-        'label' => 'Training Sessions',
+        'label' => 'Training Page Views',
         'description' => 'Total number of online training sessions delivered primarily to unregistered users.',
         'value' => '929000',
         'note' => '(March 2023)',

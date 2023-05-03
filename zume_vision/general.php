@@ -4,7 +4,10 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 add_filter( 'go_stats_endpoint', function( $stats ) {
     global $wpdb;
 
-    $languages = zume_language_file();
+    $languages = [];
+    if ( function_exists( 'zume_language_file' ) ){
+        $languages = zume_language_file();
+    }
 
     $stats['languages'] = [
         'label' => 'Languages',
