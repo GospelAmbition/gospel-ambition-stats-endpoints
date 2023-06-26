@@ -19,12 +19,25 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         set_transient( 'dt_github_stats', $github, DAY_IN_SECONDS );
     }
 
+    function get_weblate_with_pagination( $data, $url ){
+        $response = wp_remote_get( $url );
+        $response = json_decode( wp_remote_retrieve_body( $response ), true );
+        $data = array_merge( $data, $response['results'] );
+        if ( !empty( $response['next'] ) ){
+            $data = get_weblate_with_pagination( $data, $response['next'] );
+        }
+        return $data;
+    }
+
 
     $translations_count = get_transient( 'dt_translations_count' );
     if ( empty( $translations_count ) ){
-        $translations_response = wp_remote_get( 'https://translate.disciple.tools/api/components/disciple-tools/disciple-tools-theme/statistics/' );
-        $translations = json_decode( wp_remote_retrieve_body( $translations_response ), true );
-        $translations_count = $translations['count'] ?? 0;
+        $translations_url = 'https://translate.disciple.tools/api/components/disciple-tools/disciple-tools-theme/statistics/';
+        $translations = get_weblate_with_pagination( [], $translations_url );
+        $over_80_percent = array_filter( $translations, function( $translation ){
+            return $translation['translated_percent'] >= 80;
+        });
+        $translations_count = count( $over_80_percent ) ?? 0;
         set_transient( 'dt_translations_count', $translations_count, DAY_IN_SECONDS );
     }
 
@@ -67,9 +80,8 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     ];
     $stats['languages'] = [
         'label' => 'Languages',
-        'description' => 'Total languages the core of Disciple.Tools is translated into.',
-        'value' => 51,
-        //'value' => $translations_count ?? 0,
+        'description' => 'Total languages the core of Disciple.Tools is available in with translations over 80% complete.',
+        'value' => $translations_count ?? 0,
         'public_stats' => true,
         'icon' => 'mdi mdi-translate',
     ];
