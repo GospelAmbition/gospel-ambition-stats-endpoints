@@ -2,15 +2,15 @@
 if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
 add_filter( 'go_stats_endpoint', function( $stats ) {
-    global $wpdb;
+    $use_cache = !isset( $_GET['nocache'] );
 
     $instances_stats = [];
     if ( method_exists( 'DT_Usage_Telemetry', 'get_stats' ) ) {
-        $instances_stats = DT_Usage_Telemetry::get_stats( false );
+        $instances_stats = DT_Usage_Telemetry::get_stats( $use_cache );
     }
 
     $github = get_transient( 'dt_github_stats' );
-    if ( empty( $github ) ){
+    if ( empty( $github ) || !$use_cache ){
         $github = [ 'contributors' => 0, 'stars' => 0, 'forks' => 0 ];
 
         $github_contributors = wp_remote_get( 'https://api.github.com/repos/DiscipleTools/disciple-tools-theme/contributors?per_page=100' );
@@ -31,7 +31,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 
 
     $translations_count = get_transient( 'dt_translations_count' );
-    if ( empty( $translations_count ) ){
+    if ( empty( $translations_count ) || !$use_cache ){
         $translations_url = 'https://translate.disciple.tools/api/components/disciple-tools/disciple-tools-theme/statistics/';
         $translations = get_weblate_with_pagination( [], $translations_url );
         $over_80_percent = array_filter( $translations, function( $translation ){
