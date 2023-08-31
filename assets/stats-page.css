@@ -2,15 +2,21 @@
     max-width:1340px;
     width: 100%;
     padding: 20px;
-    margin:auto;
     margin-top: 50px;
     /*min-height: 100vh;*/
 }
+#go-stats.go-page {
+    margin:auto;
+}
+
 .go-cards {
     display: flex;
     flex-wrap: wrap;
     gap: 25px;
-    margin-bottom: 150px;
+    margin-bottom: 50px;
+}
+#go-stats.go-page .go-cards{
+    margin-bottom: 150px
 }
 
 .go-card {

@@ -14,7 +14,7 @@ function go_stats( $atts ){
     ?>
 
 
-        <div id="go-stats" style="width:100%; max-width: 1340px">
+        <div id="go-stats" class="go-page" style="width:100%; max-width: 1340px">
 
             <div style='margin-bottom: 40px'>
                 <a href="?all=true" >Show all stats</a>
