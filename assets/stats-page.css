@@ -1,12 +1,12 @@
 #go-stats {
     max-width:1340px;
     width: 100%;
-    padding: 20px;
     margin-top: 50px;
     /*min-height: 100vh;*/
 }
 #go-stats.go-page {
     margin:auto;
+    padding: 20px;
 }
 
 .go-cards {
@@ -68,13 +68,15 @@
     display: inline-block;
 }
 
-#go-stats h2 {
+#go-stats.go-page h2 {
     padding-bottom: 30px;
     margin-inline-start: 20px;
 }
 
 #go-stats .site-description{
     padding-bottom: 40px;
+}
+#go-stats.go-page .site-description{
     margin-inline-start: 20px;
 }
 
