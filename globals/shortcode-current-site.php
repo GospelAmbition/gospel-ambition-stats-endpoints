@@ -28,7 +28,7 @@ function go_display_stats( $atts ){
 
             <?php go_display_site( $stats_data ) ?>
 
-            <?php go_display_cards( $stats_data['stats'], $all_stats ) ?>
+            <?php go_display_cards( 'stats', $stats_data['stats'], $all_stats ) ?>
 
             <p>
                 Stats as of <?php echo esc_html( round( ( time() - $stats_data['time'] ) / 60 / 60, 1 ) ); ?> hour(s) ago.

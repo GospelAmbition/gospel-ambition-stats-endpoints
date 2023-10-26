@@ -23,19 +23,43 @@ class GO_Sats {
     public static function get_all_projects( $use_cache = true ){
         $dt_stats = dt_cached_api_call( 'https://disciple.tools/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $dt_stats = json_decode( $dt_stats, true );
+        $dt_stats['ignored_display_chart_stats'] = [
+            'kingdom_savings'
+        ];
 
         $p4m_stats = dt_cached_api_call( 'https://pray4movement.org/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $p4m_stats = json_decode( $p4m_stats, true );
+        $p4m_stats['ignored_display_chart_stats'] = [
+            'minutes_of_prayer',
+            'p4m_pg_prayer_time',
+
+        ];
 
         $pg_stats = dt_cached_api_call( 'https://prayer.global/wp-json/go/v1/stats?', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $pg_stats = json_decode( $pg_stats, true );
+        $pg_stats['ignored_display_chart_stats'] = [
+            'minutes_of_prayer'
+        ];
 
         $zume_stats = dt_cached_api_call( 'https://zume.training/wp-json/go/v1/dt-public/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $zume_stats = json_decode( $zume_stats, true );
+        $zume_stats['ignored_display_chart_stats'] = [
+            'registrations_last_12_months',
+            'registrations_last_30_days',
+            'registrations_by_month',
+            'registrations_by_year',
+            'training_sessions',
+            'countries_online',
+            'countries_with_groups'
+        ];
 
         $kt_stats = dt_cached_api_call( 'https://kingdom.training/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $kt_stats = json_decode( $kt_stats, true );
-
+        $kt_stats['ignored_display_chart_stats'] = [
+            'introductions',
+            'sessions',
+            'trainees'
+        ];
 
         return [
             'disciple_tools' => $dt_stats,
@@ -65,7 +89,7 @@ class GO_Sats {
             $values = rtrim( $values, ',' );
 
             //phpcs:disable
-            $test = $wpdb->query( "INSERT INTO {$wpdb->prefix}go_reports 
+            $test = $wpdb->query( "INSERT INTO {$wpdb->prefix}go_reports
                 (project, stat_key, stat_date, stat_timestamp, stat_value)
                 VALUES
                 $values

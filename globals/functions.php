@@ -40,16 +40,28 @@ function go_display_stats_icon( $stat ){
     return '';
 }
 
-function go_display_cards( $stats, $display_all = false ){
+function go_display_cards( $project_id, $stats, $display_all = false, $ignored_display_chart_stats = [] ){
     ?>
     <div class='go-cards'>
-        <? foreach ( $stats ?? [] as $stat ) :
+        <? foreach ( $stats ?? [] as $stat_key => $stat ) :
             if ( !empty( $stat['public_stats'] ) || $display_all ) :?>
                 <div class="go-card">
                     <div class="go-card-container">
                         <h4 class="go-card-title">
                             <?php go_display_stats_icon( $stat ) ?>
                             <? echo esc_html( $stat['label'] ) ?>
+                            <?php
+                            if ( !in_array( $stat_key, $ignored_display_chart_stats ) ) {
+                                ?>
+                                <span class="mdi mdi-chart-box-outline display-metric-chart"
+                                      style="float: right; cursor: pointer;"
+                                      data-project_id="<?php echo esc_html( $project_id )?>"
+                                      data-metric="<?php echo esc_html( $stat_key )?>"
+                                      data-metric_title="<?php echo esc_html( $stat['label'] )?>"
+                                ></span>
+                                <?
+                            }
+                            ?>
                         </h4>
                         <? if ( is_array( $stat['value'] ) ) : ?>
                             <div class="go-card-array">
