@@ -43,13 +43,13 @@ function go_display_stats_icon( $stat ){
 function go_display_cards( $project_id, $stats, $display_all = false, $ignored_display_chart_stats = [] ){
     ?>
     <div class='go-cards'>
-        <? foreach ( $stats ?? [] as $stat_key => $stat ) :
+        <?php foreach ( $stats ?? [] as $stat_key => $stat ) :
             if ( !empty( $stat['public_stats'] ) || $display_all ) :?>
                 <div class="go-card">
                     <div class="go-card-container">
                         <h4 class="go-card-title">
                             <?php go_display_stats_icon( $stat ) ?>
-                            <? echo esc_html( $stat['label'] ) ?>
+                            <?php echo esc_html( $stat['label'] ) ?>
                             <?php
                             if ( !in_array( $stat_key, $ignored_display_chart_stats ) ) {
                                 ?>
@@ -59,32 +59,31 @@ function go_display_cards( $project_id, $stats, $display_all = false, $ignored_d
                                       data-metric="<?php echo esc_html( $stat_key )?>"
                                       data-metric_title="<?php echo esc_html( $stat['label'] )?>"
                                 ></span>
-                                <?
+                                <?php
                             }
                             ?>
                         </h4>
-                        <? if ( is_array( $stat['value'] ) ) : ?>
+                        <?php if ( is_array( $stat['value'] ) ) : ?>
                             <div class="go-card-array">
-                                <? foreach ( $stat['value'] as $value ) : ?>
-                                    <p><? echo esc_html( $value['label'] ?? '' ) ?> (<?php echo esc_html( $value['value'] ?? '' ); ?>)</p>
-                                <? endforeach; ?>
+                                <?php foreach ( $stat['value'] as $value ) : ?>
+                                    <p><?php echo esc_html( $value['label'] ?? '' ) ?> (<?php echo esc_html( $value['value'] ?? '' ); ?>)</p>
+                                <?php endforeach; ?>
                             </div>
-                        <? else : ?>
+                        <?php else : ?>
                             <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'], $stat['type'] ?? null ) ); ?>
                             <?php if ( !empty( $stat['note'] ) ) : ?>
                                 <span class="go-card-note"><?php echo esc_html( $stat['note'] ); ?></span>
                             <?php endif; ?>
                             </p>
-                        <? endif; ?>
-                        <p class="go-stat-desc"><? echo esc_html( $stat['description'] ?? '' ) ?></p>
+                        <?php endif; ?>
+                        <p class="go-stat-desc"><?php echo esc_html( $stat['description'] ?? '' ) ?></p>
                     </div>
                 </div>
-            <? endif; ?>
-        <? endforeach; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
     </div>
     <?php
 }
-
 
 function go_display_site( $site ){
     ?>
@@ -101,4 +100,3 @@ function go_display_site( $site ){
         </p>
     <?php endif;
 }
-
