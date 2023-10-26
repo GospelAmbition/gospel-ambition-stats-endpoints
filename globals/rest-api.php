@@ -83,6 +83,7 @@ class GO_Stats_Endpoints
         global $wpdb;
 
         return $wpdb->get_results( $wpdb->prepare(
+            //phpcs:disable
             "
                 SELECT
 		            YEAR( FROM_UNIXTIME( stat_timestamp ) ) AS year,
@@ -95,6 +96,7 @@ class GO_Stats_Endpoints
 	            GROUP BY YEAR( FROM_UNIXTIME( stat_timestamp ) ), MONTH( FROM_UNIXTIME( stat_timestamp ) )
 	            ORDER BY YEAR( FROM_UNIXTIME( stat_timestamp ) ), MONTH( FROM_UNIXTIME( stat_timestamp ) )
             ", $project_id, $metric, $ts_start, $ts_end
+            //phpcs:enable
         ), ARRAY_A );
     }
 

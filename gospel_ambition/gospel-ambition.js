@@ -16,7 +16,6 @@ jQuery(function ($) {
     // https://www.amcharts.com/docs/v5/getting-started/#Root_element
     am5_root = am5.Root.new('ga_metrics_modal_content');
     am5_root.tapToActivate = true;
-    console.log(am5_root);
 
     // Set themes
     // https://www.amcharts.com/docs/v5/concepts/themes/

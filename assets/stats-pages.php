@@ -2,31 +2,7 @@
 
 if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
-add_action( 'wp_head', function () {
-    ?>
-    <!-- Foundation Framework -->
-    <!-- Compressed CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css"
-          crossorigin="anonymous">
-
-    <!-- Compressed JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/js/foundation.min.js"
-            crossorigin="anonymous"></script>
-
-    <!-- foundation-float.min.css: Compressed CSS with legacy Float Grid -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation-float.min.css"
-          crossorigin="anonymous">
-
-    <!-- foundation-prototype.min.css: Compressed CSS with prototyping classes -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation-prototype.min.css"
-          crossorigin="anonymous">
-
-    <!-- foundation-rtl.min.css: Compressed CSS with right-to-left reading direction -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation-rtl.min.css"
-          crossorigin="anonymous">
-    <!-- Foundation Framework -->
-    <?php
+add_action( 'wp_head', function (){
 } );
 
 add_action('wp_enqueue_scripts', function (){
@@ -56,6 +32,12 @@ function load_scripts_gospel_ambition(): void {
     $plugin_dir_path = plugin_dir_path( __DIR__ );
     $gospel_ambition_js = 'gospel_ambition/gospel-ambition.js';
 
+    wp_enqueue_style( 'foundation-css', 'https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css', [], '6.8.1' );
+    wp_enqueue_style( 'foundation-float-css', 'https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation-float.min.css', [], '6.8.1' );
+    wp_enqueue_style( 'foundation-prototype-css', 'https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation-prototype.min.css', [], '6.8.1' );
+    wp_enqueue_style( 'foundation-rtl-css', 'https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation-rtl.min.css', [], '6.8.1' );
+
+    wp_register_script( 'foundation', 'https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/js/foundation.min.js', false, '6.8.1' );
     wp_register_script( 'amcharts-index', 'https://cdn.amcharts.com/lib/5/index.js', false, '5' );
     wp_register_script( 'amcharts-xy', 'https://cdn.amcharts.com/lib/5/xy.js', false, '5' );
     wp_register_script( 'amcharts-animated', 'https://cdn.amcharts.com/lib/5/themes/Animated.js', false, '5' );
@@ -66,6 +48,7 @@ function load_scripts_gospel_ambition(): void {
     wp_enqueue_script( $gospel_ambition_handle, trailingslashit( $plugin_dir_url ) . $gospel_ambition_js, [
         'jquery',
         'jquery-ui-core',
+        'foundation',
         'amcharts-index',
         'amcharts-xy',
         'amcharts-animated',
