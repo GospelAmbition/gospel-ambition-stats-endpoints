@@ -83,20 +83,19 @@ class GO_Stats_Endpoints
         global $wpdb;
 
         return $wpdb->get_results( $wpdb->prepare(
-            //phpcs:disable
             "
                 SELECT
 		            YEAR( FROM_UNIXTIME( stat_timestamp ) ) AS year,
 		            MONTH( FROM_UNIXTIME( stat_timestamp ) ) AS month,
+                    DAYOFMONTH( FROM_UNIXTIME( stat_timestamp ) ) AS day,
 		            SUM( stat_value ) AS total
                 FROM wp_go_reports
                 WHERE project = %s
                     AND stat_key = %s
                     AND stat_timestamp BETWEEN %d AND %d
-	            GROUP BY YEAR( FROM_UNIXTIME( stat_timestamp ) ), MONTH( FROM_UNIXTIME( stat_timestamp ) )
-	            ORDER BY YEAR( FROM_UNIXTIME( stat_timestamp ) ), MONTH( FROM_UNIXTIME( stat_timestamp ) )
+	            GROUP BY YEAR( FROM_UNIXTIME( stat_timestamp ) ), MONTH( FROM_UNIXTIME( stat_timestamp ) ), DAYOFMONTH( FROM_UNIXTIME( stat_timestamp ) )
+	            ORDER BY YEAR( FROM_UNIXTIME( stat_timestamp ) ), MONTH( FROM_UNIXTIME( stat_timestamp ) ), DAYOFMONTH( FROM_UNIXTIME( stat_timestamp ) )
             ", $project_id, $metric, $ts_start, $ts_end
-            //phpcs:enable
         ), ARRAY_A );
     }
 

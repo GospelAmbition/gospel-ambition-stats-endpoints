@@ -41,8 +41,6 @@ function load_scripts_gospel_ambition(): void {
     wp_register_script( 'amcharts-index', 'https://cdn.amcharts.com/lib/5/index.js', false, '5' );
     wp_register_script( 'amcharts-xy', 'https://cdn.amcharts.com/lib/5/xy.js', false, '5' );
     wp_register_script( 'amcharts-animated', 'https://cdn.amcharts.com/lib/5/themes/Animated.js', false, '5' );
-    wp_register_script( 'lodash', 'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js', false, '4.17.21' );
-    wp_register_script( 'moment', 'https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js', false, '2.29.4' );
 
     $gospel_ambition_handle = 'gospel_ambition_script_handle';
     wp_enqueue_script( $gospel_ambition_handle, trailingslashit( $plugin_dir_url ) . $gospel_ambition_js, [
@@ -51,9 +49,7 @@ function load_scripts_gospel_ambition(): void {
         'foundation',
         'amcharts-index',
         'amcharts-xy',
-        'amcharts-animated',
-        'lodash',
-        'moment'
+        'amcharts-animated'
     ], filemtime( trailingslashit( $plugin_dir_path ) . $gospel_ambition_js ), true );
 
     wp_localize_script( $gospel_ambition_handle, 'gospel_ambition_script_obj', [

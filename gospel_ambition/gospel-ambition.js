@@ -36,6 +36,7 @@ jQuery(function ($) {
     let project_id = $(e.currentTarget).data('project_id');
     let metric = $(e.currentTarget).data('metric');
     let metric_title = $(e.currentTarget).data('metric_title');
+    let metric_type = $(e.currentTarget).data('metric_type');
     let modal = $('#ga_metrics_modal');
     let modal_title = $(modal).find('#ga_metrics_modal_title');
     let modal_content = $(modal).find('#ga_metrics_modal_content');
@@ -44,16 +45,19 @@ jQuery(function ($) {
     // Display metric modal.
     $(modal_content).fadeOut('fast', function () {
       $(modal_spinner).show();
-      $(modal_title).text(window.lodash.escape(metric_title));
+      $(modal_title).text(encodeURI(metric_title).replace(/%20/g, ' '));
       $(modal).foundation('open');
 
       // Fetch corresponding metrics.
+      let date_start = new Date();
+      date_start.setUTCFullYear(date_start.getUTCFullYear() - 1);
+
       let payload = {
         'site_id': 'gospel_ambition',
         'project_id': project_id,
         'metric': metric,
-        'ts_start': moment().subtract(1, 'year').unix(),
-        'ts_end': moment().unix()
+        'ts_start': parseInt("" + date_start.getTime() / 1000),
+        'ts_end': parseInt("" + new Date().getTime() / 1000)
       };
 
       $.ajax({
@@ -69,15 +73,15 @@ jQuery(function ($) {
       .then(response => {
         if ( response['metrics'] ) {
 
-          let data = prepare_display_metrics( response['metrics'], payload['ts_start'], payload['ts_end'] );
+          let data = prepare_display_metrics( response['metrics'], payload['ts_start'], payload['ts_end'], metric_type );
 
           // Create chart
           // https://www.amcharts.com/docs/v5/charts/xy-chart/
           am5_chart = am5_root.container.children.push(am5xy.XYChart.new(am5_root, {
             panX: false,
             panY: false,
-            wheelX: "panX",
-            wheelY: "zoomX"
+            wheelX: 'none',
+            wheelY: 'none'
           }));
 
           // Add cursor
@@ -110,7 +114,7 @@ jQuery(function ($) {
             categoryXField: "month",
             valueYField: "value",
             tooltip: am5.Tooltip.new(am5_root, {
-              labelText: "[bold]{year}-{month}[/]: {valueY}"
+              labelText: '[bold]{year}-{month}-{day}[/]: {valueY}' + ((metric_type === 'minutes') ? ' [bold](yrs)[/]' : '')
             })
           }));
 
@@ -142,29 +146,50 @@ jQuery(function ($) {
    * HELPER FUNCTIONS
    */
 
-  function prepare_display_metrics( metrics, ts_start, ts_end) {
-    let start = moment.unix(ts_start);
-    let end = moment.unix(ts_end);
+  function prepare_display_metrics( metrics, ts_start, ts_end, metric_type) {
     let display_metrics = [];
+    let date_start = new Date(0);
+    date_start.setUTCSeconds(ts_start);
 
     // Parse metric range.
     for (let a = 0; a < 12; a++) {
-      let next_month = start.add(1, 'months');
-      let year = next_month.year();
-      let month = next_month.month() + 1;
+      let next_date_month = new Date( date_start.setMonth(date_start.getMonth() + 1) );
+
+      //let next_month = start.add(1, 'months');
+      let year = next_date_month.getUTCFullYear();
+      let month = next_date_month.getMonth() + 1;
+      let day = 1; // Specify date in month to be processed.
 
       // Attempt to locate corresponding metric.
-      let matched_metric = window.lodash.find( metrics, { 'year': String(year), 'month': String(month) } );
+      let matched_metric = metrics.find((element) => (String(element.year) === String(year)) && (String(element.month) === String(month)) && (String(element.day) === String(day)));
 
       // Package metric findings.
       display_metrics.push({
-        'year': next_month.format('YYYY'),
-        'month': next_month.format('MMM'),
-        'value': ( matched_metric && matched_metric['total'] ) ? parseInt( matched_metric['total'] ) : 0
+        'year': String(next_date_month.getUTCFullYear()),
+        'month': next_date_month.toLocaleString('default', { month: 'short' }),
+        'day': day,
+        'value': prepare_display_metrics_values(metric_type, (matched_metric && matched_metric['total']) ? parseInt(matched_metric['total']) : 0)
       });
     }
 
     return display_metrics;
+  }
+
+  function prepare_display_metrics_values( metric_type, value ) {
+    let units = {
+      'year': (24 * 60) * 365,
+      'month': (24 * 60) * 30,
+      'week': (24 * 60) * 7,
+      'day': 24 * 60,
+      'minute': 1
+    }
+
+    switch (metric_type) {
+      case 'minutes':
+        return parseFloat((value / units.year).toFixed(2));
+      default:
+        return value;
+    }
   }
 
 });

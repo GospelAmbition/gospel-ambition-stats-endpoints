@@ -58,6 +58,7 @@ function go_display_cards( $project_id, $stats, $display_all = false, $ignored_d
                                       data-project_id="<?php echo esc_html( $project_id )?>"
                                       data-metric="<?php echo esc_html( $stat_key )?>"
                                       data-metric_title="<?php echo esc_html( $stat['label'] )?>"
+                                      data-metric_type="<?php echo esc_html( $stat['type'] ?? '' )?>"
                                 ></span>
                                 <?php
                             }
