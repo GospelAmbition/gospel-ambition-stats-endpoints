@@ -72,9 +72,9 @@ function go_display_cards( $project_id, $stats, $display_all = false, $ignored_d
                             </div>
                         <?php else : ?>
                             <p class="go-card-value"><?php echo esc_html( go_format_stat_value( $stat['value'], $stat['type'] ?? null ) ); ?>
-                            <?php if ( !empty( $stat['note'] ) ) : ?>
-                                <span class="go-card-note"><?php echo esc_html( $stat['note'] ); ?></span>
-                            <?php endif; ?>
+                                <?php if ( !empty( $stat['note'] ) ) : ?>
+                                    <span class="go-card-note"><?php echo esc_html( $stat['note'] ); ?></span>
+                                <?php endif; ?>
                             </p>
                         <?php endif; ?>
                         <p class="go-stat-desc"><?php echo esc_html( $stat['description'] ?? '' ) ?></p>
@@ -93,11 +93,11 @@ function go_display_site( $site ){
     </h2>
     <?php if ( !empty( $site['site_description'] ) ) : ?>
         <p class="site-description">
-        <?php
+            <?php
             $url = '@(http)?(s)?(://)?(([a-zA-Z])([-\w]+\.)+([^\s\.]+[^\s]*)+[^,.\s])@';
             $site['site_description'] = preg_replace( $url, '<a href="http$2://$4" target="_blank" title="$0">$0</a>', $site['site_description'] );
             echo nl2br( wp_kses_post( $site['site_description'] ) );
-        ?>
+            ?>
         </p>
     <?php endif;
 }
