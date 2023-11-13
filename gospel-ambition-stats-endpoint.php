@@ -74,8 +74,8 @@ add_action( 'after_setup_theme', [ 'GO_Context_Switcher', 'instance' ], 10 );
 
 
 function go_display_minutes( $time_committed ){
-    $days_committed = round( $time_committed / 60 / 24, 2 ) % 365;
-    $years_committed = floor( $time_committed / 60 / 24 / 365 );
+    $days_committed = intval( round( $time_committed / 60 / 24, 2 ) ) % 365;
+    $years_committed = intval( floor( $time_committed / 60 / 24 / 365 ) );
     $string = '';
     if ( !empty( $years_committed ) ){
         $string .= $years_committed . ' year' . ( $years_committed > 1 ? 's' : '' );

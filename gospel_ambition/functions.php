@@ -20,22 +20,38 @@ class GO_Sats {
         self::get_all_projects( false );
     }
 
+    public static function ignore_display_chart_stats( $stats ) {
+        $ignored_stats = [];
+        foreach ( $stats ?? [] as $metric_key => $metric ) {
+            $metric_value = $metric['value'];
+            if ( !isset( $metric_value ) || !is_numeric( $metric_value ) ) {
+                $ignored_stats[] = $metric_key;
+            }
+        }
+
+        return $ignored_stats;
+    }
+
     public static function get_all_projects( $use_cache = true ){
         $dt_stats = dt_cached_api_call( 'https://disciple.tools/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $dt_stats = json_decode( $dt_stats, true );
+        $dt_stats['ignored_display_chart_stats'] = self::ignore_display_chart_stats( $dt_stats['stats'] );
 
         $p4m_stats = dt_cached_api_call( 'https://pray4movement.org/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $p4m_stats = json_decode( $p4m_stats, true );
+        $p4m_stats['ignored_display_chart_stats'] = self::ignore_display_chart_stats( $p4m_stats['stats'] );
 
         $pg_stats = dt_cached_api_call( 'https://prayer.global/wp-json/go/v1/stats?', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $pg_stats = json_decode( $pg_stats, true );
+        $pg_stats['ignored_display_chart_stats'] = self::ignore_display_chart_stats( $pg_stats['stats'] );
 
         $zume_stats = dt_cached_api_call( 'https://zume.training/wp-json/go/v1/dt-public/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $zume_stats = json_decode( $zume_stats, true );
+        $zume_stats['ignored_display_chart_stats'] = self::ignore_display_chart_stats( $zume_stats['stats'] );
 
         $kt_stats = dt_cached_api_call( 'https://kingdom.training/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $kt_stats = json_decode( $kt_stats, true );
-
+        $kt_stats['ignored_display_chart_stats'] = self::ignore_display_chart_stats( $kt_stats['stats'] );
 
         return [
             'disciple_tools' => $dt_stats,
@@ -65,7 +81,7 @@ class GO_Sats {
             $values = rtrim( $values, ',' );
 
             //phpcs:disable
-            $test = $wpdb->query( "INSERT INTO {$wpdb->prefix}go_reports 
+            $test = $wpdb->query( "INSERT INTO {$wpdb->prefix}go_reports
                 (project, stat_key, stat_date, stat_timestamp, stat_value)
                 VALUES
                 $values

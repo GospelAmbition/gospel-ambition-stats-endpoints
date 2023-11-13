@@ -4,6 +4,12 @@
  */
 $dir = scandir( __DIR__ );
 foreach ( $dir as $file ){
+
+    // Bypass specified files.
+    if ( in_array( $file, [ 'modal-metric-chart.php' ] ) ) {
+        continue;
+    }
+
     if ( 'php' === substr( $file, -3, 3 ) && 'index.php' !== $file && 'loader.php' !== $file && substr( $file, 0, 1 ) !== '.' ) {
         require_once( __DIR__ . '/' . $file );
     }
