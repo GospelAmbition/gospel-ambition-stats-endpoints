@@ -24,7 +24,7 @@ class GO_Sats {
         $ignored_stats = [];
         foreach ( $stats ?? [] as $metric_key => $metric ) {
             $metric_value = $metric['value'];
-            if ( !isset($metric_value) || !is_numeric($metric_value) ) {
+            if ( !isset( $metric_value ) || !is_numeric( $metric_value ) ) {
                 $ignored_stats[] = $metric_key;
             }
         }
