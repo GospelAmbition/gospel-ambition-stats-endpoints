@@ -41,16 +41,31 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         set_transient( 'dt_translations_count', $translations_count, DAY_IN_SECONDS );
     }
 
+    $stats['total_users'] = [
+        'label' => 'Total Users',
+        'description' => 'Total number of users',
+        'value' => $instances_stats['total']['total_users'] ?? 0,
+        'icon' => 'mdi mdi-account',
+    ];
+
+    $stats['active_users'] = [
+        'label' => 'Total Users',
+        'description' => 'Active number of users',
+        'value' => $instances_stats['total']['active_users'] ?? 0,
+        'icon' => 'mdi mdi-account',
+    ];
 
     $stats['all_time_instances'] = [
         'label' => 'All Time Sites',
         'description' => 'Total number of sites that have ever been created.',
         'value' => $instances_stats['all_time']['sites'] ?? 0,
+        'icon' => 'mdi mdi-web',
     ];
     $stats['total_instances'] = [
         'label' => 'Online Sites',
         'description' => 'Number of online sites in the last 30 days.',
         'value' => $instances_stats['total']['sites'],
+        'icon' => 'mdi mdi-web',
     ];
     $stats['active_instances'] = [
         'label' => 'Active Sites',
@@ -63,13 +78,14 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'label' => 'Online Domains',
         'description' => 'Number of online domains in the last 30 days.',
         'value' => $instances_stats['total']['domains'],
+        'icon' => 'mdi mdi-monitor-cellphone',
     ];
     $stats['active_domains'] = [
         'label' => 'Active Domains',
         'description' => 'Total known active domains hosting Disciple.Tools installs.',
         'value' => $instances_stats['active']['domains'],
         'public_stats' => true,
-        'icon' => 'mdi mdi-sitemap',
+        'icon' => 'mdi mdi-monitor-cellphone',
     ];
     $stats['theme_contributors'] = [
         'label' => 'Contributors',
