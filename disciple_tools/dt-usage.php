@@ -43,14 +43,14 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 
     $stats['total_users'] = [
         'label' => 'Total Users',
-        'description' => 'Total number of users',
+        'description' => 'Total number of users on sites active in the last 30 days',
         'value' => $instances_stats['total']['total_users'] ?? 0,
         'icon' => 'mdi mdi-account',
     ];
 
     $stats['active_users'] = [
-        'label' => 'Total Users',
-        'description' => 'Active number of users',
+        'label' => 'Active Users',
+        'description' => 'Active number of users in the last 30 days',
         'value' => $instances_stats['total']['active_users'] ?? 0,
         'icon' => 'mdi mdi-account',
     ];
@@ -59,33 +59,33 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'label' => 'All Time Sites',
         'description' => 'Total number of sites that have ever been created.',
         'value' => $instances_stats['all_time']['sites'] ?? 0,
-        'icon' => 'mdi mdi-web',
+        'icon' => 'mdi mdi-monitor-cellphone',
     ];
     $stats['total_instances'] = [
         'label' => 'Online Sites',
         'description' => 'Number of online sites in the last 30 days.',
         'value' => $instances_stats['total']['sites'],
-        'icon' => 'mdi mdi-web',
+        'icon' => 'mdi mdi-monitor-cellphone',
     ];
     $stats['active_instances'] = [
         'label' => 'Active Sites',
         'description' => 'Total known installs of Disciple.Tools with active users.',
         'value' => $instances_stats['active']['sites'],
         'public_stats' => true,
-        'icon' => 'mdi mdi-web'
+        'icon' => 'mdi mdi-monitor-cellphone',
     ];
     $stats['total_domains'] = [
         'label' => 'Online Domains',
         'description' => 'Number of online domains in the last 30 days.',
         'value' => $instances_stats['total']['domains'],
-        'icon' => 'mdi mdi-monitor-cellphone',
+        'icon' => 'mdi mdi-web',
     ];
     $stats['active_domains'] = [
         'label' => 'Active Domains',
         'description' => 'Total known active domains hosting Disciple.Tools installs.',
         'value' => $instances_stats['active']['domains'],
         'public_stats' => true,
-        'icon' => 'mdi mdi-monitor-cellphone',
+        'icon' => 'mdi mdi-web',
     ];
     $stats['theme_contributors'] = [
         'label' => 'Contributors',
