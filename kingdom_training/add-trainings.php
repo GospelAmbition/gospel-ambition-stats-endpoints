@@ -4,9 +4,9 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 add_filter( 'go_stats_endpoint', function( $stats ) {
     global $wpdb;
 
-    $courses_completed = $wpdb->get_var( 'SELECT COUNT(*) FROM wp_learndash_user_activity WHERE `activity_completed` > 0' );
+    $courses_completed = $wpdb->get_var( "SELECT COUNT(*) FROM wp_learndash_user_activity WHERE `activity_completed` > 0 AND activity_type = 'course'" );
 
-    $users_course_completed = $wpdb->get_var( 'SELECT COUNT(DISTINCT(user_id)) FROM wp_learndash_user_activity WHERE `activity_completed` > 0' );
+    $users_course_completed = $wpdb->get_var( "SELECT COUNT(DISTINCT(user_id)) FROM wp_learndash_user_activity WHERE `activity_completed` > 0 AND activity_type = 'course'" );
 
     $stats['introductions'] = [
         'label' => 'Introductions',
@@ -41,11 +41,25 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['courses_complete'] = [
         'label' => 'Course Completed',
         'description' => 'Total courses completed by users.',
+        'value' => $courses_completed ?? 0,
+        'hidden' => true,
+    ];
+
+    $stats['kt_courses_complete'] = [
+        'label' => 'Course Completed',
+        'description' => 'Total courses completed by users.',
         'value' => $courses_completed ?? '',
         'public_stats' => true,
     ];
 
     $stats['user_course_complete'] = [
+        'label' => 'Users who Completed a Course',
+        'description' => 'Total users who completed a course.',
+        'value' => $users_course_completed ?? 0,
+        'hidden' => true,
+    ];
+
+    $stats['kt_user_course_complete'] = [
         'label' => 'Users who Completed a Course',
         'description' => 'Total users who completed a course.',
         'value' => $users_course_completed ?? '',
