@@ -57,7 +57,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 
     $stats['all_time_instances'] = [
         'label' => 'Disciple.Tools Installs',
-        'description' => 'Total number of install that have been set up.',
+        'description' => 'All time number of installations of Disciple.Tools.',
         'value' => $instances_stats['all_time']['sites'] ?? 0,
         'icon' => 'mdi mdi-monitor-cellphone',
         'public_stats' => true,
@@ -75,7 +75,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         'icon' => 'mdi mdi-monitor-cellphone',
     ];
     $stats['total_domains'] = [
-        'label' => 'Ministries that have used Disciple.Tools',
+        'label' => 'Partner Ministries',
         'description' => 'Total known active domains hosting Disciple.Tools installs.',
         'value' => $instances_stats['total']['domains'],
         'icon' => 'mdi mdi-web',
