@@ -44,7 +44,7 @@ function go_display_cards( $project_id, $stats, $display_all = false, $ignored_d
     ?>
     <div class='go-cards'>
         <?php foreach ( $stats ?? [] as $stat_key => $stat ) :
-            if ( !empty( $stat['public_stats'] ) || $display_all ) :?>
+            if ( empty( $stat['hidden'] ) && ( !empty( $stat['public_stats'] ) || $display_all ) ) :?>
                 <div class="go-card">
                     <div class="go-card-container">
                         <h4 class="go-card-title">
