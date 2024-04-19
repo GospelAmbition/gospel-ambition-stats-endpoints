@@ -41,7 +41,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['courses_complete'] = [
         'label' => 'Course Completed',
         'description' => 'Total courses completed by users.',
-        'value' => $courses_completed ?? 0,
+        'value' => 0,
         'hidden' => true,
     ];
 
@@ -55,7 +55,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     $stats['user_course_complete'] = [
         'label' => 'Users who Completed a Course',
         'description' => 'Total users who completed a course.',
-        'value' => $users_course_completed ?? 0,
+        'value' => 0,
         'hidden' => true,
     ];
 
