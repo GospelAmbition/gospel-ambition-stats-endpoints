@@ -16,6 +16,7 @@ add_action('wp_enqueue_scripts', function (){
             case 'Vision':
             case 'Zúme Training':
             case 'Pray4Movement':
+            case 'Prayer.Tools':
             case 'Kingdom Training':
             case 'Disciple.Tools':
                 break;

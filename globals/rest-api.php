@@ -59,6 +59,7 @@ class GO_Stats_Endpoints
             case 'vision':
             case 'zume_training':
             case 'pray4movement':
+            case 'Prayer.Tools':
             case 'kingdom_training':
             case 'disciple_tools':
                 break;

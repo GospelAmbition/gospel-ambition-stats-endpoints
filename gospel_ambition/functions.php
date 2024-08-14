@@ -37,7 +37,7 @@ class GO_Sats {
         $dt_stats = json_decode( $dt_stats, true );
         $dt_stats['ignored_display_chart_stats'] = self::ignore_display_chart_stats( $dt_stats['stats'] );
 
-        $p4m_stats = dt_cached_api_call( 'https://pray4movement.org/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
+        $p4m_stats = dt_cached_api_call( 'https://prayer.tools/wp-json/go/v1/stats', 'GET', [], HOUR_IN_SECONDS, $use_cache );
         $p4m_stats = json_decode( $p4m_stats, true );
         $p4m_stats['ignored_display_chart_stats'] = self::ignore_display_chart_stats( $p4m_stats['stats'] );
 

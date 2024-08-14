@@ -48,6 +48,7 @@ class GO_Context_Switcher {
                 break;
 
             case 'Pray4Movement':
+            case 'Prayer.Tools':
                 require_once( 'pray4movement/loader.php' );
                 break;
 
