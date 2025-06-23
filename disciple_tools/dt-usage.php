@@ -22,7 +22,7 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
     function get_weblate_with_pagination( $data, $url ){
         $response = wp_remote_get( $url );
         $response = json_decode( wp_remote_retrieve_body( $response ), true );
-        $data = array_merge( $data, $response['results'] );
+        $data = array_merge( $data, $response['results'] ?? [] );
         if ( !empty( $response['next'] ) ){
             $data = get_weblate_with_pagination( $data, $response['next'] );
         }
