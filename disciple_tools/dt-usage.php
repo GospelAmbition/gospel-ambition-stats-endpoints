@@ -19,12 +19,16 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
         set_transient( 'dt_github_stats', $github, DAY_IN_SECONDS );
     }
 
-    function get_weblate_with_pagination( $data, $url ){
-        $response = wp_remote_get( $url );
+    function get_weblate_with_pagination( $data, $url, $key ){
+        $response = wp_remote_get( $url, array(
+            'headers' => array(
+                'Authorization' => 'Token ' . $key
+            )
+        ) );
         $response = json_decode( wp_remote_retrieve_body( $response ), true );
         $data = array_merge( $data, $response['results'] ?? [] );
         if ( !empty( $response['next'] ) ){
-            $data = get_weblate_with_pagination( $data, $response['next'] );
+            $data = get_weblate_with_pagination( $data, $response['next'], $key );
         }
         return $data;
     }
@@ -32,8 +36,9 @@ add_filter( 'go_stats_endpoint', function( $stats ) {
 
     $translations_count = get_transient( 'dt_translations_count' );
     if ( empty( $translations_count ) || !$use_cache ){
+        $key = get_option( 'dt_weblate_key', false );
         $translations_url = 'https://translate.disciple.tools/api/components/disciple-tools/disciple-tools-theme/statistics/';
-        $translations = get_weblate_with_pagination( [], $translations_url );
+        $translations = get_weblate_with_pagination( [], $translations_url, $key );
         $over_80_percent = array_filter( $translations, function( $translation ){
             return $translation['translated_percent'] >= 80;
         });
