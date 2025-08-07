@@ -46,7 +46,8 @@ class PG_Historical_Stats_Admin {
             <h1>Prayer Global Historical Stats</h1>
             <p>This tool calculates and sends historical daily statistics for Prayer Global to the stats API.</p>
             
-            <div class="tab-content">
+            <div class="tab-content" style="display: flex; gap: 20px;">
+                <div class="left-column" style="max-width: 60%;">
                 <div class="card">
                     <h2>Run Historical Prayer Global Stats</h2>
                     <form id="pg-historical-stats-form">
@@ -104,9 +105,16 @@ class PG_Historical_Stats_Admin {
                         <li><strong>Weekly New Active Users:</strong> Users active in the last 7 days for the first time</li>
                         <li><strong>Monthly Recurring Active Users:</strong> Users active in the last 30 days who were also active before</li>
                         <li><strong>Monthly New Active Users:</strong> Users active in the last 30 days for the first time</li>
+                        <li><strong>Average Prayers per Session:</strong> Average number of prayers per user session (total prayers ÷ unique users)</li>
+                        <li><strong>Users 24h:</strong> Number of unique users who prayed in the last 24 hours</li>
+                        <li><strong>Prayers 24h:</strong> Total number of prayers in the last 24 hours</li>
+                        <li><strong>New Users 24h:</strong> Users who prayed in the last 24 hours for the first time ever</li>
+                        <li><strong>Returning Users 24h:</strong> Users who prayed in the last 24 hours who had prayed before</li>
                     </ul>
                 </div>
+                </div>
 
+                <div class="right-column" style="flex: 1; max-width: 40%;">
                 <div class="card">
                     <h2>Current Stats (Today)</h2>
                     <?php
@@ -130,8 +138,13 @@ class PG_Historical_Stats_Admin {
                     $weekly_new_active = $metrics['weekly_new_active_users'];
                     $monthly_recurring_active = $metrics['monthly_recurring_active_users'];
                     $monthly_new_active = $metrics['monthly_new_active_users'];
+                    $avg_prayers_per_session = $metrics['avg_prayers_per_session'];
+                    $users_24h = $metrics['users_24h'];
+                    $prayers_24h = $metrics['prayers_24h'];
+                    $new_users_24h = $metrics['new_users_24h'];
+                    $returning_users_24h = $metrics['returning_users_24h'];
                     ?>
-                    <div class="current-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+                    <div class="current-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 15px 0;">
                         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
                             <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $prayer_warriors ); ?></h3>
                             <p style="margin: 5px 0 0 0; font-weight: bold;">Prayer Warriors</p>
@@ -184,6 +197,26 @@ class PG_Historical_Stats_Admin {
                             <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $monthly_new_active ); ?></h3>
                             <p style="margin: 5px 0 0 0; font-weight: bold;">Monthly New Active</p>
                         </div>
+                        <div style="background: #ffeaa7; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( $avg_prayers_per_session, 2 ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Avg Prayers per Session</p>
+                        </div>
+                        <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $users_24h ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Users 24h</p>
+                        </div>
+                        <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $prayers_24h ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Prayers 24h</p>
+                        </div>
+                        <div style="background: #c8e6c9; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $new_users_24h ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">New Users 24h</p>
+                        </div>
+                        <div style="background: #ffecb3; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $returning_users_24h ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Returning Users 24h</p>
+                        </div>
                     </div>
                     <p><small><em>Last updated: <?php echo date( 'Y-m-d H:i:s T' ); ?></em></small></p>
                 </div>
@@ -225,6 +258,7 @@ class PG_Historical_Stats_Admin {
                         <li><strong>Historical Accuracy:</strong> Lap completion data uses approximations for historical dates. For precise historical data, consider implementing a lap history tracking system.</li>
                         <li><strong>Daily Automation:</strong> Daily stats are automatically sent at 2:00 AM via WordPress cron.</li>
                     </ul>
+                </div>
                 </div>
             </div>
         </div>

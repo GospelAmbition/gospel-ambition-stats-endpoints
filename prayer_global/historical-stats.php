@@ -307,6 +307,72 @@ class PG_Historical_Stats {
         ", $month_before, $timestamp_end, $month_before );
         $monthly_new_active_users = (int) $wpdb->get_var( $monthly_new_sql );
 
+        // 11. Historical Average prayers per session (prayers on this date / users on this date)
+        $avg_prayers_per_session_sql = $wpdb->prepare( "
+            SELECT 
+                CASE 
+                    WHEN COUNT(DISTINCT hash) = 0 THEN 0
+                    ELSE ROUND(COUNT(*) / COUNT(DISTINCT hash), 2)
+                END as avg_prayers_per_session
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp >= %d
+            AND timestamp <= %d
+        ", $timestamp_start, $timestamp_end );
+        $avg_prayers_per_session = (float) $wpdb->get_var( $avg_prayers_per_session_sql );
+
+        // 12. Historical Users who prayed on this date
+        $users_24h_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT hash) as users_24h
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp >= %d
+            AND timestamp <= %d
+        ", $timestamp_start, $timestamp_end );
+        $users_24h = (int) $wpdb->get_var( $users_24h_sql );
+
+        // 13. Historical Number of prayers on this date
+        $prayers_24h_sql = $wpdb->prepare( "
+            SELECT COUNT(*) as prayers_24h
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp >= %d
+            AND timestamp <= %d
+        ", $timestamp_start, $timestamp_end );
+        $prayers_24h = (int) $wpdb->get_var( $prayers_24h_sql );
+
+        // 14. Historical New users who prayed on this date (first time ever)
+        $new_users_24h_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT r1.hash) as new_users_24h
+            FROM {$wpdb->dt_reports} r1
+            WHERE r1.type = 'prayer_app'
+            AND r1.timestamp >= %d
+            AND r1.timestamp <= %d
+            AND r1.hash IN (
+                SELECT hash FROM {$wpdb->dt_reports}
+                WHERE type = 'prayer_app'
+                GROUP BY hash
+                HAVING MIN(timestamp) >= %d AND MIN(timestamp) <= %d
+            )
+        ", $timestamp_start, $timestamp_end, $timestamp_start, $timestamp_end );
+        $new_users_24h = (int) $wpdb->get_var( $new_users_24h_sql );
+
+        // 15. Historical Returning users who prayed on this date (had prayed before this date)
+        $returning_users_24h_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT r1.hash) as returning_users_24h
+            FROM {$wpdb->dt_reports} r1
+            WHERE r1.type = 'prayer_app'
+            AND r1.timestamp >= %d
+            AND r1.timestamp <= %d
+            AND r1.hash IN (
+                SELECT hash FROM {$wpdb->dt_reports}
+                WHERE type = 'prayer_app'
+                GROUP BY hash
+                HAVING MIN(timestamp) < %d
+            )
+        ", $timestamp_start, $timestamp_end, $timestamp_start );
+        $returning_users_24h = (int) $wpdb->get_var( $returning_users_24h_sql );
+
         if ( $prayer_warriors === null || $minutes_of_prayer === null || $total_prayers === null ) {
             return false;
         }
@@ -324,7 +390,12 @@ class PG_Historical_Stats {
             'weekly_recurring_active_users' => $weekly_recurring_active_users,
             'weekly_new_active_users' => $weekly_new_active_users,
             'monthly_recurring_active_users' => $monthly_recurring_active_users,
-            'monthly_new_active_users' => $monthly_new_active_users
+            'monthly_new_active_users' => $monthly_new_active_users,
+            'avg_prayers_per_session' => $avg_prayers_per_session,
+            'users_24h' => $users_24h,
+            'prayers_24h' => $prayers_24h,
+            'new_users_24h' => $new_users_24h,
+            'returning_users_24h' => $returning_users_24h
         ];
     }
 
