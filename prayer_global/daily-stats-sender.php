@@ -114,8 +114,6 @@ class PG_Daily_Stats_Sender {
         ";
         $laps_completed = (int) $wpdb->get_var( $laps_sql );
 
-        // 5. Locations covered by laps
-        $locations_covered = $laps_completed * 4770;
 
         // 6. Total registered users
         $users_sql = "
@@ -310,20 +308,17 @@ class PG_Daily_Stats_Sender {
             'minutes_of_prayer' => (int) $minutes_of_prayer,
             'total_prayers' => (int) $total_prayers,
             'global_laps_completed' => (int) $laps_completed,
-            'locations_covered_by_laps' => (int) $locations_covered,
             'registered_users' => (int) $total_users,
             'custom_laps_completed' => (int) $custom_laps_completed,
-            'daily_recurring_active_users' => $daily_recurring_active_users,
-            'daily_new_active_users' => $daily_new_active_users,
-            'weekly_recurring_active_users' => $weekly_recurring_active_users,
-            'weekly_new_active_users' => $weekly_new_active_users,
-            'monthly_recurring_active_users' => $monthly_recurring_active_users,
-            'monthly_new_active_users' => $monthly_new_active_users,
+            'day_returning_users' => $daily_recurring_active_users,
+            'day_new_users' => $daily_new_active_users,
+            'week_returning_users' => $weekly_recurring_active_users,
+            'week_new_users' => $weekly_new_active_users,
+            'month_returning_users' => $monthly_recurring_active_users,
+            'month_new_users' => $monthly_new_active_users,
             'avg_prayers_per_session' => $avg_prayers_per_session,
-            'users_24h' => $users_24h,
-            'prayers_24h' => $prayers_24h,
-            'new_users_24h' => $new_users_24h,
-            'returning_users_24h' => $returning_users_24h
+            'day_users' => $users_24h,
+            'day_prayers' => $prayers_24h,
         ];
     }
 

@@ -70,6 +70,8 @@ class PG_Historical_Stats {
             error_log( "PG Historical Stats: Processing date {$current_date}" );
             
             $metrics = $this->calculate_historical_metrics_for_date( $current_date );
+
+            dt_write_log( $metrics );
             
             if ( $metrics === false ) {
                 $results[] = [
@@ -140,6 +142,7 @@ class PG_Historical_Stats {
     private function calculate_historical_metrics_for_date( $date ) {
         global $wpdb;
 
+
         // Calculate end of day timestamp for the date
         $date_start = $date . ' 00:00:00';
         $date_end = $date . ' 23:59:59';
@@ -182,8 +185,6 @@ class PG_Historical_Stats {
         ", $timestamp_end );
         $laps_completed = (int) $wpdb->get_var( $laps_sql );
 
-        // 5. Locations covered by laps
-        $locations_covered = $laps_completed * 4770;
 
         // 6. Total registered users up to this date
         $users_sql = $wpdb->prepare( "
@@ -208,7 +209,7 @@ class PG_Historical_Stats {
         $custom_laps_completed = (int) $wpdb->get_var( $custom_laps_sql );
 
         // 8. Historical Daily active users metrics (for this specific date)        
-        // Daily recurring active users - users active on this date who were also active before
+        // Daily recurring active users - users active on this date who were also active before - SUPER OPTIMIZED
         $daily_recurring_sql = $wpdb->prepare( "
             SELECT COUNT(DISTINCT recent.hash) as daily_recurring_active_users
             FROM {$wpdb->dt_reports} recent
@@ -220,21 +221,24 @@ class PG_Historical_Stats {
                 WHERE previous.hash = recent.hash
                 AND previous.type = 'prayer_app'
                 AND previous.timestamp < %d
+                LIMIT 1
             )
         ", $timestamp_start, $timestamp_end, $timestamp_start );
         $daily_recurring_active_users = (int) $wpdb->get_var( $daily_recurring_sql );
 
-        // Daily new active users - users active on this date for the first time
+        // Daily new active users - users active on this date for the first time - SUPER OPTIMIZED
         $daily_new_sql = $wpdb->prepare( "
             SELECT COUNT(DISTINCT hash) as daily_new_active_users
             FROM {$wpdb->dt_reports}
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
-            AND hash NOT IN (
-                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                AND timestamp < %d
+            AND NOT EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.hash = {$wpdb->dt_reports}.hash
+                AND previous.type = 'prayer_app'
+                AND previous.timestamp < %d
+                LIMIT 1
             )
         ", $timestamp_start, $timestamp_end, $timestamp_start );
         $daily_new_active_users = (int) $wpdb->get_var( $daily_new_sql );
@@ -258,17 +262,19 @@ class PG_Historical_Stats {
         ", $week_before, $timestamp_end, $week_before );
         $weekly_recurring_active_users = (int) $wpdb->get_var( $weekly_recurring_sql );
 
-        // Weekly new active users
+        // Weekly new active users - SUPER OPTIMIZED with EXISTS and LIMIT
         $weekly_new_sql = $wpdb->prepare( "
             SELECT COUNT(DISTINCT hash) as weekly_new_active_users
             FROM {$wpdb->dt_reports}
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
-            AND hash NOT IN (
-                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                AND timestamp < %d
+            AND NOT EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.hash = {$wpdb->dt_reports}.hash
+                AND previous.type = 'prayer_app'
+                AND previous.timestamp < %d
+                LIMIT 1
             )
         ", $week_before, $timestamp_end, $week_before );
         $weekly_new_active_users = (int) $wpdb->get_var( $weekly_new_sql );
@@ -292,17 +298,19 @@ class PG_Historical_Stats {
         ", $month_before, $timestamp_end, $month_before );
         $monthly_recurring_active_users = (int) $wpdb->get_var( $monthly_recurring_sql );
 
-        // Monthly new active users
+        // Monthly new active users - SUPER OPTIMIZED with EXISTS and LIMIT
         $monthly_new_sql = $wpdb->prepare( "
             SELECT COUNT(DISTINCT hash) as monthly_new_active_users
             FROM {$wpdb->dt_reports}
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
-            AND hash NOT IN (
-                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                AND timestamp < %d
+            AND NOT EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.hash = {$wpdb->dt_reports}.hash
+                AND previous.type = 'prayer_app'
+                AND previous.timestamp < %d
+                LIMIT 1
             )
         ", $month_before, $timestamp_end, $month_before );
         $monthly_new_active_users = (int) $wpdb->get_var( $monthly_new_sql );
@@ -341,61 +349,28 @@ class PG_Historical_Stats {
         ", $timestamp_start, $timestamp_end );
         $prayers_24h = (int) $wpdb->get_var( $prayers_24h_sql );
 
-        // 14. Historical New users who prayed on this date (first time ever)
-        $new_users_24h_sql = $wpdb->prepare( "
-            SELECT COUNT(DISTINCT r1.hash) as new_users_24h
-            FROM {$wpdb->dt_reports} r1
-            WHERE r1.type = 'prayer_app'
-            AND r1.timestamp >= %d
-            AND r1.timestamp <= %d
-            AND r1.hash IN (
-                SELECT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                GROUP BY hash
-                HAVING MIN(timestamp) >= %d AND MIN(timestamp) <= %d
-            )
-        ", $timestamp_start, $timestamp_end, $timestamp_start, $timestamp_end );
-        $new_users_24h = (int) $wpdb->get_var( $new_users_24h_sql );
-
-        // 15. Historical Returning users who prayed on this date (had prayed before this date)
-        $returning_users_24h_sql = $wpdb->prepare( "
-            SELECT COUNT(DISTINCT r1.hash) as returning_users_24h
-            FROM {$wpdb->dt_reports} r1
-            WHERE r1.type = 'prayer_app'
-            AND r1.timestamp >= %d
-            AND r1.timestamp <= %d
-            AND r1.hash IN (
-                SELECT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                GROUP BY hash
-                HAVING MIN(timestamp) < %d
-            )
-        ", $timestamp_start, $timestamp_end, $timestamp_start );
-        $returning_users_24h = (int) $wpdb->get_var( $returning_users_24h_sql );
 
         if ( $prayer_warriors === null || $minutes_of_prayer === null || $total_prayers === null ) {
             return false;
         }
+
 
         return [
             'prayer_warriors' => (int) $prayer_warriors,
             'minutes_of_prayer' => (int) $minutes_of_prayer,
             'total_prayers' => (int) $total_prayers,
             'global_laps_completed' => (int) $laps_completed,
-            'locations_covered_by_laps' => (int) $locations_covered,
             'registered_users' => (int) $total_users,
             'custom_laps_completed' => (int) $custom_laps_completed,
-            'daily_recurring_active_users' => $daily_recurring_active_users,
-            'daily_new_active_users' => $daily_new_active_users,
-            'weekly_recurring_active_users' => $weekly_recurring_active_users,
-            'weekly_new_active_users' => $weekly_new_active_users,
-            'monthly_recurring_active_users' => $monthly_recurring_active_users,
-            'monthly_new_active_users' => $monthly_new_active_users,
+            'day_returning_users' => $daily_recurring_active_users,
+            'day_new_users' => $daily_new_active_users,
+            'week_returning_users' => $weekly_recurring_active_users,
+            'week_new_users' => $weekly_new_active_users,
+            'month_returning_users' => $monthly_recurring_active_users,
+            'month_new_users' => $monthly_new_active_users,
             'avg_prayers_per_session' => $avg_prayers_per_session,
-            'users_24h' => $users_24h,
-            'prayers_24h' => $prayers_24h,
-            'new_users_24h' => $new_users_24h,
-            'returning_users_24h' => $returning_users_24h
+            'day_users' => $users_24h,
+            'day_prayers' => $prayers_24h,
         ];
     }
 

@@ -95,7 +95,7 @@ jQuery(document).ready(function($) {
                 
                 let details = '';
                 if (result.status === 'success' && result.metrics) {
-                    details = `Warriors: ${result.metrics.prayer_warriors}, Minutes: ${result.metrics.minutes_of_prayer}, Prayers: ${result.metrics.total_prayers}, Laps: ${result.metrics.laps_completed}, Locations: ${result.metrics.locations_covered_by_laps}`;
+                    details = `Warriors: ${result.metrics.prayer_warriors}, Minutes: ${result.metrics.minutes_of_prayer}, Prayers: ${result.metrics.total_prayers}, Laps: ${result.metrics.global_laps_completed}, Locations: ${result.metrics.locations_covered_by_laps}`;
                 } else if (result.message) {
                     details = result.message;
                 }
