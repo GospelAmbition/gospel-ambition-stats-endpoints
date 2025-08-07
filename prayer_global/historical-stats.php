@@ -1,0 +1,251 @@
+<?php
+if ( !defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+class PG_Historical_Stats {
+    
+    public function __construct() {
+        // AJAX hooks for admin interface
+        add_action( 'wp_ajax_run_pg_historical_stats', [ $this, 'ajax_run_historical_stats' ] );
+    }
+
+    /**
+     * AJAX handler for running historical stats
+     */
+    public function ajax_run_historical_stats() {
+        // Security check
+        if ( ! current_user_can( 'manage_dt' ) ) {
+            wp_die( json_encode( [ 'error' => 'Permission denied' ] ) );
+        }
+        
+        if ( ! wp_verify_nonce( $_POST['_ajax_nonce'], 'pg_historical_stats_nonce' ) ) {
+            wp_die( json_encode( [ 'error' => 'Invalid nonce' ] ) );
+        }
+
+        $start_date = sanitize_text_field( $_POST['start_date'] );
+        $end_date = sanitize_text_field( $_POST['end_date'] );
+
+        if ( empty( $start_date ) || empty( $end_date ) ) {
+            wp_die( json_encode( [ 'error' => 'Start date and end date are required' ] ) );
+        }
+
+        // Validate date format
+        $start_timestamp = strtotime( $start_date );
+        $end_timestamp = strtotime( $end_date );
+
+        if ( ! $start_timestamp || ! $end_timestamp ) {
+            wp_die( json_encode( [ 'error' => 'Invalid date format' ] ) );
+        }
+
+        if ( $start_timestamp > $end_timestamp ) {
+            wp_die( json_encode( [ 'error' => 'Start date must be before or equal to end date' ] ) );
+        }
+
+        // Run the historical stats processing
+        $results = $this->process_historical_stats( $start_date, $end_date );
+        
+        wp_die( json_encode( $results ) );
+    }
+
+    /**
+     * Process historical stats for a date range
+     * 
+     * @param string $start_date
+     * @param string $end_date
+     * @return array
+     */
+    public function process_historical_stats( $start_date, $end_date ) {
+        $api_key = get_option( 'go_stats_key' );
+        if ( empty( $api_key ) ) {
+            return [ 'error' => 'API key not found. Please set go_stats_key option.' ];
+        }
+
+        $results = [];
+        $processed = 0;
+        $errors = 0;
+
+        $current_date = $start_date;
+        while ( strtotime( $current_date ) <= strtotime( $end_date ) ) {
+            error_log( "PG Historical Stats: Processing date {$current_date}" );
+            
+            $metrics = $this->calculate_historical_metrics_for_date( $current_date );
+            
+            if ( $metrics === false ) {
+                $results[] = [
+                    'date' => $current_date,
+                    'status' => 'error',
+                    'message' => 'Failed to calculate metrics'
+                ];
+                $errors++;
+            } else {
+                $payload = [
+                    'project_id' => 'prayer_global',
+                    'stat_date' => $current_date,
+                    'metrics' => $metrics
+                ];
+
+                $response = $this->send_api_request( $api_key, $payload );
+                
+                if ( is_wp_error( $response ) ) {
+                    $results[] = [
+                        'date' => $current_date,
+                        'status' => 'error',
+                        'message' => $response->get_error_message()
+                    ];
+                    $errors++;
+                    error_log( "PG Historical Stats: API error for {$current_date}: " . $response->get_error_message() );
+                } else {
+                    $response_code = wp_remote_retrieve_response_code( $response );
+                    if ( $response_code === 200 || $response_code === 201 ) {
+                        $results[] = [
+                            'date' => $current_date,
+                            'status' => 'success',
+                            'metrics' => $metrics
+                        ];
+                        $processed++;
+                        error_log( "PG Historical Stats: Successfully sent data for {$current_date}" );
+                    } else {
+                        $results[] = [
+                            'date' => $current_date,
+                            'status' => 'error',
+                            'message' => "API returned status code {$response_code}"
+                        ];
+                        $errors++;
+                        error_log( "PG Historical Stats: API status error for {$current_date}: {$response_code}" );
+                    }
+                }
+            }
+
+            // Add a small delay to avoid overwhelming the API
+            usleep( 500000 ); // 0.5 second delay
+
+            $current_date = date( 'Y-m-d', strtotime( $current_date . ' +1 day' ) );
+        }
+
+        return [
+            'total_dates' => count( $results ),
+            'processed' => $processed,
+            'errors' => $errors,
+            'results' => $results
+        ];
+    }
+
+    /**
+     * Calculate historical metrics for a specific date
+     * 
+     * @param string $date
+     * @return array|false
+     */
+    private function calculate_historical_metrics_for_date( $date ) {
+        global $wpdb;
+
+        // Calculate end of day timestamp for the date
+        $date_start = $date . ' 00:00:00';
+        $date_end = $date . ' 23:59:59';
+        $timestamp_start = strtotime( $date_start );
+        $timestamp_end = strtotime( $date_end );
+
+        // 1. Prayer Warriors - distinct hashes up to this date
+        $prayer_warriors_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT hash) as prayer_warriors
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp <= %d
+        ", $timestamp_end );
+        $prayer_warriors = $wpdb->get_var( $prayer_warriors_sql );
+
+        // 2. Minutes of Prayer - sum of value up to this date
+        $minutes_sql = $wpdb->prepare( "
+            SELECT SUM(value) as minutes
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp <= %d
+        ", $timestamp_end );
+        $minutes_of_prayer = $wpdb->get_var( $minutes_sql );
+
+        // 3. Total Prayers (over specific locations) up to this date
+        $prayers_sql = $wpdb->prepare( "
+            SELECT COUNT(*) as prayers
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp <= %d
+        ", $timestamp_end );
+        $total_prayers = $wpdb->get_var( $prayers_sql );
+
+        // 4. Laps completed - get historical lap number from dt_relays table
+        $laps_sql = $wpdb->prepare( "
+            SELECT COALESCE(MIN(total), 0) as laps_completed
+            FROM {$wpdb->dt_relays}
+            WHERE relay_key = '49ba4c'
+            AND epoch < %d
+        ", $timestamp_end );
+        $laps_completed = (int) $wpdb->get_var( $laps_sql );
+
+        // 5. Locations covered by laps
+        $locations_covered = $laps_completed * 4770;
+
+        // 6. Total registered users up to this date
+        $users_sql = $wpdb->prepare( "
+            SELECT COUNT(*) as total_users
+            FROM {$wpdb->users}
+            WHERE user_registered <= %s
+        ", $date_end );
+        $total_users = $wpdb->get_var( $users_sql );
+
+        // 7. Custom laps completed - sum the min total for each relay_key (excluding 49ba4c) where count = 4700 up to this date
+        $custom_laps_sql = $wpdb->prepare( "
+            SELECT COALESCE(SUM(min_total), 0) as custom_laps_completed
+            FROM (
+                SELECT relay_key, MIN(total) as min_total, COUNT(*) as relay_count
+                FROM {$wpdb->dt_relays}
+                WHERE relay_key != '49ba4c'
+                AND epoch < %d
+                GROUP BY relay_key
+                HAVING relay_count = 4770
+            ) grouped_relays
+        ", $timestamp_end );
+        $custom_laps_completed = (int) $wpdb->get_var( $custom_laps_sql );
+
+        if ( $prayer_warriors === null || $minutes_of_prayer === null || $total_prayers === null ) {
+            return false;
+        }
+
+        return [
+            'prayer_warriors' => (int) $prayer_warriors,
+            'minutes_of_prayer' => (int) $minutes_of_prayer,
+            'total_prayers' => (int) $total_prayers,
+            'global_laps_completed' => (int) $laps_completed,
+            'locations_covered_by_laps' => (int) $locations_covered,
+            'registered_users' => (int) $total_users,
+            'custom_laps_completed' => (int) $custom_laps_completed
+        ];
+    }
+
+    /**
+     * Send API request to stats endpoint
+     * 
+     * @param string $api_key
+     * @param array $payload
+     * @return array|WP_Error
+     */
+    private function send_api_request( $api_key, $payload ) {
+        $url = 'https://stats.gospelambition.org/api/metrics';
+        
+        $args = [
+            'method' => 'POST',
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'x-api-key' => $api_key
+            ],
+            'body' => json_encode( $payload ),
+            'timeout' => 30
+        ];
+
+        return wp_remote_request( $url, $args );
+    }
+}
+
+// Initialize the class
+new PG_Historical_Stats();
+
