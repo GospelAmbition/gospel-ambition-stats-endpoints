@@ -98,6 +98,12 @@ class PG_Historical_Stats_Admin {
                         <li><strong>Total Prayers:</strong> Number of prayer sessions over specific locations</li>
                         <li><strong>Laps Completed:</strong> Number of complete prayer laps around the world</li>
                         <li><strong>Locations Covered:</strong> Total locations covered by completed laps (laps × 4770)</li>
+                        <li><strong>Daily Recurring Active Users:</strong> Users active in the last 24h who were also active before</li>
+                        <li><strong>Daily New Active Users:</strong> Users active in the last 24h for the first time</li>
+                        <li><strong>Weekly Recurring Active Users:</strong> Users active in the last 7 days who were also active before</li>
+                        <li><strong>Weekly New Active Users:</strong> Users active in the last 7 days for the first time</li>
+                        <li><strong>Monthly Recurring Active Users:</strong> Users active in the last 30 days who were also active before</li>
+                        <li><strong>Monthly New Active Users:</strong> Users active in the last 30 days for the first time</li>
                     </ul>
                 </div>
 
@@ -118,6 +124,12 @@ class PG_Historical_Stats_Admin {
                     $locations_covered = $metrics['locations_covered_by_laps'];
                     $total_users = $metrics['registered_users'];
                     $custom_laps_completed = $metrics['custom_laps_completed'];
+                    $daily_recurring_active = $metrics['daily_recurring_active_users'];
+                    $daily_new_active = $metrics['daily_new_active_users'];
+                    $weekly_recurring_active = $metrics['weekly_recurring_active_users'];
+                    $weekly_new_active = $metrics['weekly_new_active_users'];
+                    $monthly_recurring_active = $metrics['monthly_recurring_active_users'];
+                    $monthly_new_active = $metrics['monthly_new_active_users'];
                     ?>
                     <div class="current-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
                         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
@@ -147,6 +159,30 @@ class PG_Historical_Stats_Admin {
                         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
                             <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $custom_laps_completed ); ?></h3>
                             <p style="margin: 5px 0 0 0; font-weight: bold;">Custom Laps</p>
+                        </div>
+                        <div style="background: #e8f4fd; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $daily_recurring_active ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Daily Recurring Active</p>
+                        </div>
+                        <div style="background: #e8f4fd; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $daily_new_active ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Daily New Active</p>
+                        </div>
+                        <div style="background: #fff2e8; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $weekly_recurring_active ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Weekly Recurring Active</p>
+                        </div>
+                        <div style="background: #fff2e8; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $weekly_new_active ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Weekly New Active</p>
+                        </div>
+                        <div style="background: #f0f8e8; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $monthly_recurring_active ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Monthly Recurring Active</p>
+                        </div>
+                        <div style="background: #f0f8e8; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $monthly_new_active ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Monthly New Active</p>
                         </div>
                     </div>
                     <p><small><em>Last updated: <?php echo date( 'Y-m-d H:i:s T' ); ?></em></small></p>

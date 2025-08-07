@@ -137,6 +137,109 @@ class PG_Daily_Stats_Sender {
         ";
         $custom_laps_completed = (int) $wpdb->get_var( $custom_laps_sql );
 
+        // 8. Daily active users metrics (last 24 hours)
+        $now = time();
+        $day_ago = $now - (24 * 60 * 60);
+        
+        // Daily recurring active users - users active in last 24h who were also active before
+        $daily_recurring_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT recent.hash) as daily_recurring_active_users
+            FROM {$wpdb->dt_reports} recent
+            WHERE recent.type = 'prayer_app'
+            AND recent.timestamp >= %d
+            AND recent.timestamp <= %d
+            AND EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.hash = recent.hash
+                AND previous.type = 'prayer_app'
+                AND previous.timestamp < %d
+            )
+        ", $day_ago, $now, $day_ago );
+        $daily_recurring_active_users = (int) $wpdb->get_var( $daily_recurring_sql );
+
+        // Daily new active users - users active in last 24h for the first time
+        $daily_new_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT hash) as daily_new_active_users
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp >= %d
+            AND timestamp <= %d
+            AND hash NOT IN (
+                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
+                WHERE type = 'prayer_app'
+                AND timestamp < %d
+            )
+        ", $day_ago, $now, $day_ago );
+        $daily_new_active_users = (int) $wpdb->get_var( $daily_new_sql );
+
+        // 9. Weekly active users metrics (last 7 days)
+        $week_ago = $now - (7 * 24 * 60 * 60);
+        
+        // Weekly recurring active users
+        $weekly_recurring_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT recent.hash) as weekly_recurring_active_users
+            FROM {$wpdb->dt_reports} recent
+            WHERE recent.type = 'prayer_app'
+            AND recent.timestamp >= %d
+            AND recent.timestamp <= %d
+            AND EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.hash = recent.hash
+                AND previous.type = 'prayer_app'
+                AND previous.timestamp < %d
+            )
+        ", $week_ago, $now, $week_ago );
+        $weekly_recurring_active_users = (int) $wpdb->get_var( $weekly_recurring_sql );
+
+        // Weekly new active users
+        $weekly_new_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT hash) as weekly_new_active_users
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp >= %d
+            AND timestamp <= %d
+            AND hash NOT IN (
+                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
+                WHERE type = 'prayer_app'
+                AND timestamp < %d
+            )
+        ", $week_ago, $now, $week_ago );
+        $weekly_new_active_users = (int) $wpdb->get_var( $weekly_new_sql );
+
+        // 10. Monthly active users metrics (last 30 days)
+        $month_ago = $now - (30 * 24 * 60 * 60);
+        
+        // Monthly recurring active users
+        $monthly_recurring_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT recent.hash) as monthly_recurring_active_users
+            FROM {$wpdb->dt_reports} recent
+            WHERE recent.type = 'prayer_app'
+            AND recent.timestamp >= %d
+            AND recent.timestamp <= %d
+            AND EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.hash = recent.hash
+                AND previous.type = 'prayer_app'
+                AND previous.timestamp < %d
+            )
+        ", $month_ago, $now, $month_ago );
+        $monthly_recurring_active_users = (int) $wpdb->get_var( $monthly_recurring_sql );
+
+        // Monthly new active users
+        $monthly_new_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT hash) as monthly_new_active_users
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp >= %d
+            AND timestamp <= %d
+            AND hash NOT IN (
+                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
+                WHERE type = 'prayer_app'
+                AND timestamp < %d
+            )
+        ", $month_ago, $now, $month_ago );
+        $monthly_new_active_users = (int) $wpdb->get_var( $monthly_new_sql );
+
         return [
             'prayer_warriors' => (int) $prayer_warriors,
             'minutes_of_prayer' => (int) $minutes_of_prayer,
@@ -144,7 +247,13 @@ class PG_Daily_Stats_Sender {
             'global_laps_completed' => (int) $laps_completed,
             'locations_covered_by_laps' => (int) $locations_covered,
             'registered_users' => (int) $total_users,
-            'custom_laps_completed' => (int) $custom_laps_completed
+            'custom_laps_completed' => (int) $custom_laps_completed,
+            'daily_recurring_active_users' => $daily_recurring_active_users,
+            'daily_new_active_users' => $daily_new_active_users,
+            'weekly_recurring_active_users' => $weekly_recurring_active_users,
+            'weekly_new_active_users' => $weekly_new_active_users,
+            'monthly_recurring_active_users' => $monthly_recurring_active_users,
+            'monthly_new_active_users' => $monthly_new_active_users
         ];
     }
 
