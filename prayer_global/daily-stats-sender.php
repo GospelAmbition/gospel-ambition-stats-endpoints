@@ -272,36 +272,16 @@ class PG_Daily_Stats_Sender {
         ", $day_ago, $now );
         $prayers_24h = (int) $wpdb->get_var( $prayers_24h_sql );
 
-        // 14. New users who prayed in last 24h (first time ever)
-        $new_users_24h_sql = $wpdb->prepare( "
-            SELECT COUNT(DISTINCT hash) as new_users_24h
+        // 14. Minutes of prayer in last 24h
+        $minutes_24h_sql = $wpdb->prepare( "
+            SELECT COALESCE(SUM(value), 0) as minutes_24h
             FROM {$wpdb->dt_reports}
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
-            AND hash NOT IN (
-                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                AND timestamp < %d
-            )
-        ", $day_ago, $now, $day_ago );
-        $new_users_24h = (int) $wpdb->get_var( $new_users_24h_sql );
+        ", $day_ago, $now );
+        $minutes_24h = (int) $wpdb->get_var( $minutes_24h_sql );
 
-        // 15. Returning users who prayed in last 24h (had prayed before)
-        $returning_users_24h_sql = $wpdb->prepare( "
-            SELECT COUNT(DISTINCT recent.hash) as returning_users_24h
-            FROM {$wpdb->dt_reports} recent
-            WHERE recent.type = 'prayer_app'
-            AND recent.timestamp >= %d
-            AND recent.timestamp <= %d
-            AND EXISTS (
-                SELECT 1 FROM {$wpdb->dt_reports} previous
-                WHERE previous.hash = recent.hash
-                AND previous.type = 'prayer_app'
-                AND previous.timestamp < %d
-            )
-        ", $day_ago, $now, $day_ago );
-        $returning_users_24h = (int) $wpdb->get_var( $returning_users_24h_sql );
 
         return [
             'prayer_warriors' => (int) $prayer_warriors,
@@ -319,6 +299,7 @@ class PG_Daily_Stats_Sender {
             'avg_prayers_per_session' => $avg_prayers_per_session,
             'day_users' => $users_24h,
             'day_prayers' => $prayers_24h,
+            'day_minutes_prayer' => $minutes_24h,
         ];
     }
 

@@ -176,13 +176,15 @@ class PG_Historical_Stats {
         ", $timestamp_end );
         $total_prayers = $wpdb->get_var( $prayers_sql );
 
-        // 4. Laps completed - get historical lap number from dt_relays table
+        // 4. Laps completed - get historical lap number from dt_reports table
         $laps_sql = $wpdb->prepare( "
-            SELECT COALESCE(MIN(total), 0) as laps_completed
-            FROM {$wpdb->dt_relays}
-            WHERE relay_key = '49ba4c'
-            AND epoch < %d
-        ", $timestamp_end );
+            SELECT COALESCE(MIN(global_lap_number), 0)-1 as laps_completed
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp <= %d
+            AND timestamp >= %d
+            AND global_lap_number > 0
+        ", $timestamp_end, $timestamp_end - 1 * DAY_IN_SECONDS );
         $laps_completed = (int) $wpdb->get_var( $laps_sql );
 
 
@@ -194,18 +196,20 @@ class PG_Historical_Stats {
         ", $date_end );
         $total_users = $wpdb->get_var( $users_sql );
 
-        // 7. Custom laps completed - sum the min total for each relay_key (excluding 49ba4c) where count = 4700 up to this date
+        // 7. Custom laps completed - sum the min custom_lap_number from dt_reports table up to this date
         $custom_laps_sql = $wpdb->prepare( "
-            SELECT COALESCE(SUM(min_total), 0) as custom_laps_completed
+            SELECT COALESCE(SUM(min_custom_lap-1), 0) as custom_laps_completed
             FROM (
-                SELECT relay_key, MIN(total) as min_total, COUNT(*) as relay_count
-                FROM {$wpdb->dt_relays}
-                WHERE relay_key != '49ba4c'
-                AND epoch < %d
-                GROUP BY relay_key
-                HAVING relay_count = 4770
-            ) grouped_relays
-        ", $timestamp_end );
+                SELECT MIN(lap_number) as min_custom_lap
+                FROM {$wpdb->dt_reports}
+                WHERE type = 'prayer_app'
+                AND timestamp <= %d
+                AND timestamp >= %d
+                AND lap_number > 0
+                AND subtype = 'custom'
+                GROUP BY post_id
+            ) grouped_custom_laps
+        ", $timestamp_end, $timestamp_end - 7 * DAY_IN_SECONDS );
         $custom_laps_completed = (int) $wpdb->get_var( $custom_laps_sql );
 
         // 8. Historical Daily active users metrics (for this specific date)        
@@ -349,6 +353,16 @@ class PG_Historical_Stats {
         ", $timestamp_start, $timestamp_end );
         $prayers_24h = (int) $wpdb->get_var( $prayers_24h_sql );
 
+        // 14. Historical Minutes of prayer on this date
+        $minutes_24h_sql = $wpdb->prepare( "
+            SELECT COALESCE(SUM(value), 0) as minutes_24h
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'prayer_app'
+            AND timestamp >= %d
+            AND timestamp <= %d
+        ", $timestamp_start, $timestamp_end );
+        $minutes_24h = (int) $wpdb->get_var( $minutes_24h_sql );
+
 
         if ( $prayer_warriors === null || $minutes_of_prayer === null || $total_prayers === null ) {
             return false;
@@ -371,6 +385,7 @@ class PG_Historical_Stats {
             'avg_prayers_per_session' => $avg_prayers_per_session,
             'day_users' => $users_24h,
             'day_prayers' => $prayers_24h,
+            'day_minutes_prayer' => $minutes_24h,
         ];
     }
 

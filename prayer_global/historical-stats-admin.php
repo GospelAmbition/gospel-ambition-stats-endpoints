@@ -97,8 +97,8 @@ class PG_Historical_Stats_Admin {
                         <li><strong>Prayer Warriors:</strong> Unique users who have prayed (distinct hashes from dt_reports)</li>
                         <li><strong>Minutes of Prayer:</strong> Total time spent in prayer across all sessions</li>
                         <li><strong>Total Prayers:</strong> Number of prayer sessions over specific locations</li>
-                        <li><strong>Laps Completed:</strong> Number of complete prayer laps around the world</li>
-                        <li><strong>Locations Covered:</strong> Total locations covered by completed laps (laps × 4770)</li>
+                        <li><strong>Global Laps Completed:</strong> Number of complete global prayer laps around the world</li>
+                        <li><strong>Custom Laps Completed:</strong> Number of custom prayer laps completed</li>
                         <li><strong>Daily Recurring Active Users:</strong> Users active in the last 24h who were also active before</li>
                         <li><strong>Daily New Active Users:</strong> Users active in the last 24h for the first time</li>
                         <li><strong>Weekly Recurring Active Users:</strong> Users active in the last 7 days who were also active before</li>
@@ -106,10 +106,11 @@ class PG_Historical_Stats_Admin {
                         <li><strong>Monthly Recurring Active Users:</strong> Users active in the last 30 days who were also active before</li>
                         <li><strong>Monthly New Active Users:</strong> Users active in the last 30 days for the first time</li>
                         <li><strong>Average Prayers per Session:</strong> Average number of prayers per user session (total prayers ÷ unique users)</li>
-                        <li><strong>Users 24h:</strong> Number of unique users who prayed in the last 24 hours</li>
-                        <li><strong>Prayers 24h:</strong> Total number of prayers in the last 24 hours</li>
-                        <li><strong>New Users 24h:</strong> Users who prayed in the last 24 hours for the first time ever</li>
-                        <li><strong>Returning Users 24h:</strong> Users who prayed in the last 24 hours who had prayed before</li>
+                        <li><strong>Day Users:</strong> Number of unique users who prayed on this date</li>
+                        <li><strong>Day Prayers:</strong> Total number of prayers on this date</li>
+                        <li><strong>Day Minutes Prayer:</strong> Total minutes of prayer on this date</li>
+                        <li><strong>Day New Users:</strong> Users who prayed on this date for the first time ever</li>
+                        <li><strong>Day Returning Users:</strong> Users who prayed on this date who had prayed before</li>
                     </ul>
                 </div>
                 </div>
@@ -129,20 +130,18 @@ class PG_Historical_Stats_Admin {
                     $minutes_of_prayer = $metrics['minutes_of_prayer'];
                     $total_prayers = $metrics['total_prayers'];
                     $global_laps_completed = $metrics['global_laps_completed'];
-                    $locations_covered = $metrics['locations_covered_by_laps'];
                     $total_users = $metrics['registered_users'];
                     $custom_laps_completed = $metrics['custom_laps_completed'];
-                    $daily_recurring_active = $metrics['daily_recurring_active_users'];
-                    $daily_new_active = $metrics['daily_new_active_users'];
-                    $weekly_recurring_active = $metrics['weekly_recurring_active_users'];
-                    $weekly_new_active = $metrics['weekly_new_active_users'];
-                    $monthly_recurring_active = $metrics['monthly_recurring_active_users'];
-                    $monthly_new_active = $metrics['monthly_new_active_users'];
+                    $daily_recurring_active = $metrics['day_returning_users'];
+                    $daily_new_active = $metrics['day_new_users'];
+                    $weekly_recurring_active = $metrics['week_returning_users'];
+                    $weekly_new_active = $metrics['week_new_users'];
+                    $monthly_recurring_active = $metrics['month_returning_users'];
+                    $monthly_new_active = $metrics['month_new_users'];
                     $avg_prayers_per_session = $metrics['avg_prayers_per_session'];
-                    $users_24h = $metrics['users_24h'];
-                    $prayers_24h = $metrics['prayers_24h'];
-                    $new_users_24h = $metrics['new_users_24h'];
-                    $returning_users_24h = $metrics['returning_users_24h'];
+                    $users_24h = $metrics['day_users'];
+                    $prayers_24h = $metrics['day_prayers'];
+                    $minutes_24h = $metrics['day_minutes_prayer'];
                     ?>
                     <div class="current-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 15px 0;">
                         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
@@ -160,10 +159,6 @@ class PG_Historical_Stats_Admin {
                         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
                             <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $global_laps_completed ); ?></h3>
                             <p style="margin: 5px 0 0 0; font-weight: bold;">Global Laps</p>
-                        </div>
-                        <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
-                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $locations_covered ); ?></h3>
-                            <p style="margin: 5px 0 0 0; font-weight: bold;">Locations Covered</p>
                         </div>
                         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
                             <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $total_users ); ?></h3>
@@ -210,12 +205,8 @@ class PG_Historical_Stats_Admin {
                             <p style="margin: 5px 0 0 0; font-weight: bold;">Prayers 24h</p>
                         </div>
                         <div style="background: #c8e6c9; padding: 15px; border-radius: 5px; text-align: center;">
-                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $new_users_24h ); ?></h3>
-                            <p style="margin: 5px 0 0 0; font-weight: bold;">New Users 24h</p>
-                        </div>
-                        <div style="background: #ffecb3; padding: 15px; border-radius: 5px; text-align: center;">
-                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $returning_users_24h ); ?></h3>
-                            <p style="margin: 5px 0 0 0; font-weight: bold;">Returning Users 24h</p>
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $minutes_24h ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Minutes 24h</p>
                         </div>
                     </div>
                     <p><small><em>Last updated: <?php echo date( 'Y-m-d H:i:s T' ); ?></em></small></p>
