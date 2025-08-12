@@ -115,6 +115,55 @@ class PG_Historical_Stats_Admin {
                         <li><strong>Day Returning Users:</strong> Users who prayed on this date who had prayed before</li>
                     </ul>
                 </div>
+
+                <div class="card">
+                    <h2>Test Daily Stats Sender</h2>
+                    <p>To manually trigger the daily stats sender:</p>
+                    <code>pg_manual_send_daily_stats();</code>
+                </div>
+
+                <div class="card">
+                    <h2>Configuration</h2>
+                    <p>Make sure the API key is configured in WordPress options:</p>
+                    <ul>
+                        <li><strong>API Key Option:</strong> <code>go_stats_key</code></li>
+                        <li><strong>API Endpoint:</strong> <code>https://stats.gospelambition.org/api/metrics</code></li>
+                        <li><strong>Project ID:</strong> <code>prayer_global</code> (or <code>prayer_global_dev</code> if WP_DEBUG is enabled)</li>
+                    </ul>
+                    
+                    <h3>Current API Key Status</h3>
+                    <?php
+                    $api_key = get_option( 'go_stats_key' );
+                    if ( empty( $api_key ) ) {
+                        echo '<p id="pg-api-key-status" style="color: red;"><strong>❌ No API key configured!</strong> Please set the <code>go_stats_key</code> option.</p>';
+                    } else {
+                        $key_preview = substr( $api_key, 0, 8 ) . '...' . substr( $api_key, -4 );
+                        echo '<p id="pg-api-key-status" style="color: green;"><strong>✅ API key configured:</strong> ' . esc_html( $key_preview ) . '</p>';
+                    }
+                    ?>
+
+                    <form id="pg-api-key-form" method="post" style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                        <label for="pg_api_key" class="screen-reader-text">API Key</label>
+                        <input type="password" id="pg_api_key" name="api_key" placeholder="Enter API key" style="max-width: 360px; width: 100%;" autocomplete="off" />
+                        <button type="submit" id="pg-save-api-key" class="button button-primary">Save API Key</button>
+                        <span id="pg-api-key-loading" style="display:none;">
+                            <img src="<?php echo esc_url( admin_url( 'images/spinner.gif' ) ); ?>" alt="Loading" />
+                        </span>
+                    </form>
+                    <div id="pg-api-key-message" style="margin-top: 8px;"></div>
+                </div>
+
+                <div class="card">
+                    <h2>Important Notes</h2>
+                    <ul>
+                        <li><strong>Processing Time:</strong> This process can take several minutes depending on the date range.</li>
+                        <li><strong>API Rate Limiting:</strong> The script includes delays between API calls to avoid overwhelming the server.</li>
+                        <li><strong>Error Logging:</strong> All results and errors are logged to the WordPress error log.</li>
+                        <li><strong>Permissions:</strong> Only users with 'manage_dt' capability can run this tool.</li>
+                        <li><strong>Historical Accuracy:</strong> Lap completion data uses approximations for historical dates. For precise historical data, consider implementing a lap history tracking system.</li>
+                        <li><strong>Daily Automation:</strong> Daily stats are automatically sent at 2:00 AM via WordPress cron.</li>
+                    </ul>
+                </div>
                 </div>
 
                 <div class="right-column" style="flex: 1; max-width: 40%;">
@@ -214,54 +263,7 @@ class PG_Historical_Stats_Admin {
                     <p><small><em>Last updated: <?php echo date( 'Y-m-d H:i:s T' ); ?></em></small></p>
                 </div>
 
-                <div class="card">
-                    <h2>Test Daily Stats Sender</h2>
-                    <p>To manually trigger the daily stats sender:</p>
-                    <code>pg_manual_send_daily_stats();</code>
-                </div>
-
-                <div class="card">
-                    <h2>Configuration</h2>
-                    <p>Make sure the API key is configured in WordPress options:</p>
-                    <ul>
-                        <li><strong>API Key Option:</strong> <code>go_stats_key</code></li>
-                        <li><strong>API Endpoint:</strong> <code>https://stats.gospelambition.org/api/metrics</code></li>
-                        <li><strong>Project ID:</strong> <code>prayer_global</code> (or <code>prayer_global_dev</code> if WP_DEBUG is enabled)</li>
-                    </ul>
-                    
-                    <h3>Current API Key Status</h3>
-                    <?php
-                    $api_key = get_option( 'go_stats_key' );
-                    if ( empty( $api_key ) ) {
-                        echo '<p id="pg-api-key-status" style="color: red;"><strong>❌ No API key configured!</strong> Please set the <code>go_stats_key</code> option.</p>';
-                    } else {
-                        $key_preview = substr( $api_key, 0, 8 ) . '...' . substr( $api_key, -4 );
-                        echo '<p id="pg-api-key-status" style="color: green;"><strong>✅ API key configured:</strong> ' . esc_html( $key_preview ) . '</p>';
-                    }
-                    ?>
-
-                    <form id="pg-api-key-form" method="post" style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
-                        <label for="pg_api_key" class="screen-reader-text">API Key</label>
-                        <input type="password" id="pg_api_key" name="api_key" placeholder="Enter API key" style="max-width: 360px; width: 100%;" autocomplete="off" />
-                        <button type="submit" id="pg-save-api-key" class="button button-primary">Save API Key</button>
-                        <span id="pg-api-key-loading" style="display:none;">
-                            <img src="<?php echo esc_url( admin_url( 'images/spinner.gif' ) ); ?>" alt="Loading" />
-                        </span>
-                    </form>
-                    <div id="pg-api-key-message" style="margin-top: 8px;"></div>
-                </div>
-
-                <div class="card">
-                    <h2>Important Notes</h2>
-                    <ul>
-                        <li><strong>Processing Time:</strong> This process can take several minutes depending on the date range.</li>
-                        <li><strong>API Rate Limiting:</strong> The script includes delays between API calls to avoid overwhelming the server.</li>
-                        <li><strong>Error Logging:</strong> All results and errors are logged to the WordPress error log.</li>
-                        <li><strong>Permissions:</strong> Only users with 'manage_dt' capability can run this tool.</li>
-                        <li><strong>Historical Accuracy:</strong> Lap completion data uses approximations for historical dates. For precise historical data, consider implementing a lap history tracking system.</li>
-                        <li><strong>Daily Automation:</strong> Daily stats are automatically sent at 2:00 AM via WordPress cron.</li>
-                    </ul>
-                </div>
+                
                 </div>
             </div>
         </div>
