@@ -8,6 +8,7 @@ class PG_Historical_Stats_Admin {
     public function __construct() {
         add_action( 'admin_menu', [ $this, 'add_admin_menu' ], 100 );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+        add_action( 'wp_ajax_save_pg_stats_key', [ $this, 'ajax_save_stats_key' ] );
     }
 
     public function add_admin_menu() {
@@ -231,12 +232,22 @@ class PG_Historical_Stats_Admin {
                     <?php
                     $api_key = get_option( 'go_stats_key' );
                     if ( empty( $api_key ) ) {
-                        echo '<p style="color: red;"><strong>❌ No API key configured!</strong> Please set the <code>go_stats_key</code> option.</p>';
+                        echo '<p id="pg-api-key-status" style="color: red;"><strong>❌ No API key configured!</strong> Please set the <code>go_stats_key</code> option.</p>';
                     } else {
                         $key_preview = substr( $api_key, 0, 8 ) . '...' . substr( $api_key, -4 );
-                        echo '<p style="color: green;"><strong>✅ API key configured:</strong> ' . esc_html( $key_preview ) . '</p>';
+                        echo '<p id="pg-api-key-status" style="color: green;"><strong>✅ API key configured:</strong> ' . esc_html( $key_preview ) . '</p>';
                     }
                     ?>
+
+                    <form id="pg-api-key-form" style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                        <label for="pg_api_key" class="screen-reader-text">API Key</label>
+                        <input type="password" id="pg_api_key" name="api_key" placeholder="Enter API key" style="max-width: 360px; width: 100%;" autocomplete="off" />
+                        <button type="submit" id="pg-save-api-key" class="button button-primary">Save API Key</button>
+                        <span id="pg-api-key-loading" style="display:none;">
+                            <img src="<?php echo esc_url( admin_url( 'images/spinner.gif' ) ); ?>" alt="Loading" />
+                        </span>
+                    </form>
+                    <div id="pg-api-key-message" style="margin-top: 8px;"></div>
                 </div>
 
                 <div class="card">
@@ -254,6 +265,33 @@ class PG_Historical_Stats_Admin {
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * AJAX handler to save the API key (stores in option 'go_stats_key')
+     */
+    public function ajax_save_stats_key() {
+        if ( ! current_user_can( 'manage_dt' ) ) {
+            wp_send_json_error( [ 'message' => 'Permission denied' ] );
+        }
+
+        $nonce = isset( $_POST['_ajax_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_ajax_nonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'pg_historical_stats_nonce' ) ) {
+            wp_send_json_error( [ 'message' => 'Invalid nonce' ] );
+        }
+
+        $api_key = isset( $_POST['api_key'] ) ? sanitize_text_field( wp_unslash( $_POST['api_key'] ) ) : '';
+        if ( empty( $api_key ) ) {
+            wp_send_json_error( [ 'message' => 'API key is required' ] );
+        }
+
+        update_option( 'go_stats_key', $api_key, false );
+
+        $key_preview = substr( $api_key, 0, 8 ) . '...' . substr( $api_key, -4 );
+        wp_send_json_success( [
+            'message' => 'API key saved',
+            'preview' => $key_preview,
+        ] );
     }
 }
 

@@ -120,4 +120,51 @@ jQuery(document).ready(function($) {
         $('#pg-error').show();
         $('#pg-results').hide();
     }
+
+    // Save API key form handler
+    $('#pg-api-key-form').on('submit', function(e) {
+        e.preventDefault();
+        const apiKey = $('#pg_api_key').val();
+        if (!apiKey) {
+            $('#pg-api-key-message').html('<span style="color:red;">Please enter an API key.</span>');
+            return;
+        }
+
+        $('#pg-save-api-key').prop('disabled', true);
+        $('#pg-api-key-loading').show();
+        $('#pg-api-key-message').empty();
+
+        $.ajax({
+            url: pgHistoricalStats.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'save_pg_stats_key',
+                api_key: apiKey,
+                _ajax_nonce: pgHistoricalStats.nonce
+            },
+            success: function(response) {
+                const data = typeof response === 'string' ? JSON.parse(response) : response;
+                if (data && data.success) {
+                    const preview = data.data && data.data.preview ? data.data.preview : '••••';
+                    $('#pg-api-key-message').html('<span style="color:green;">API key saved.</span>');
+                    if ($('#pg-api-key-status').length) {
+                        $('#pg-api-key-status').html('<strong>✅ API key configured:</strong> ' + preview).css('color', 'green');
+                    } else {
+                        $('<p id="pg-api-key-status" style="color: green;"><strong>✅ API key configured:</strong> ' + preview + '</p>').insertBefore('#pg-api-key-form');
+                    }
+                    $('#pg_api_key').val('');
+                } else {
+                    const msg = data && data.data && data.data.message ? data.data.message : 'Failed to save API key';
+                    $('#pg-api-key-message').html('<span style="color:red;">' + msg + '</span>');
+                }
+            },
+            error: function() {
+                $('#pg-api-key-message').html('<span style="color:red;">Request failed.</span>');
+            },
+            complete: function() {
+                $('#pg-save-api-key').prop('disabled', false);
+                $('#pg-api-key-loading').hide();
+            }
+        });
+    });
 });
