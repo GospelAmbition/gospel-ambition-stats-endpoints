@@ -23,7 +23,8 @@ class PG_Historical_Stats_Admin {
     }
 
     public function enqueue_scripts( $hook ) {
-        if ( $hook !== 'utilities-d-t_page_pg-historical-stats' && $hook !== 'disciple-tools_page_pg-historical-stats' ) {
+        // Enqueue when viewing our page regardless of exact prefix variations across environments
+        if ( false === strpos( (string) $hook, 'pg-historical-stats' ) ) {
             return;
         }
         
@@ -239,7 +240,7 @@ class PG_Historical_Stats_Admin {
                     }
                     ?>
 
-                    <form id="pg-api-key-form" style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                    <form id="pg-api-key-form" method="post" style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
                         <label for="pg_api_key" class="screen-reader-text">API Key</label>
                         <input type="password" id="pg_api_key" name="api_key" placeholder="Enter API key" style="max-width: 360px; width: 100%;" autocomplete="off" />
                         <button type="submit" id="pg-save-api-key" class="button button-primary">Save API Key</button>
