@@ -236,6 +236,7 @@ class PG_Historical_Stats {
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
+            AND hash IS NOT NULL
             AND NOT EXISTS (
                 SELECT 1 FROM {$wpdb->dt_reports} previous
                 WHERE previous.hash = {$wpdb->dt_reports}.hash
@@ -272,6 +273,7 @@ class PG_Historical_Stats {
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
+            AND hash IS NOT NULL
             AND NOT EXISTS (
                 SELECT 1 FROM {$wpdb->dt_reports} previous
                 WHERE previous.hash = {$wpdb->dt_reports}.hash
@@ -308,6 +310,7 @@ class PG_Historical_Stats {
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
+            AND hash IS NOT NULL
             AND NOT EXISTS (
                 SELECT 1 FROM {$wpdb->dt_reports} previous
                 WHERE previous.hash = {$wpdb->dt_reports}.hash

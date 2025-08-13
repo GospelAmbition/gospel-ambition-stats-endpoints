@@ -162,10 +162,13 @@ class PG_Daily_Stats_Sender {
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
-            AND hash NOT IN (
-                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                AND timestamp < %d
+            AND hash IS NOT NULL
+            AND NOT EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.type = 'prayer_app'
+                AND previous.hash = {$wpdb->dt_reports}.hash
+                AND previous.timestamp < %d
+                LIMIT 1
             )
         ", $day_ago, $now, $day_ago );
         $daily_new_active_users = (int) $wpdb->get_var( $daily_new_sql );
@@ -196,10 +199,13 @@ class PG_Daily_Stats_Sender {
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
-            AND hash NOT IN (
-                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                AND timestamp < %d
+            AND hash IS NOT NULL
+            AND NOT EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.type = 'prayer_app'
+                AND previous.hash = {$wpdb->dt_reports}.hash
+                AND previous.timestamp < %d
+                LIMIT 1
             )
         ", $week_ago, $now, $week_ago );
         $weekly_new_active_users = (int) $wpdb->get_var( $weekly_new_sql );
@@ -230,10 +236,13 @@ class PG_Daily_Stats_Sender {
             WHERE type = 'prayer_app'
             AND timestamp >= %d
             AND timestamp <= %d
-            AND hash NOT IN (
-                SELECT DISTINCT hash FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                AND timestamp < %d
+            AND hash IS NOT NULL
+            AND NOT EXISTS (
+                SELECT 1 FROM {$wpdb->dt_reports} previous
+                WHERE previous.type = 'prayer_app'
+                AND previous.hash = {$wpdb->dt_reports}.hash
+                AND previous.timestamp < %d
+                LIMIT 1
             )
         ", $month_ago, $now, $month_ago );
         $monthly_new_active_users = (int) $wpdb->get_var( $monthly_new_sql );
