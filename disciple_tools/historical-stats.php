@@ -93,7 +93,7 @@ class DT_Historical_Stats {
                 }
             }
 
-            usleep( 500000 );
+            usleep( 100000 ); // 0.1 seconds
             $current_date = date( 'Y-m-d', strtotime( $current_date . ' +1 day' ) );
         }
 
@@ -108,8 +108,7 @@ class DT_Historical_Stats {
     private function calculate_historical_metrics_for_date( string $date ) {
         global $wpdb;
 
-        $date_end = $date . ' 23:59:59';
-        $end_ts = strtotime( $date_end );
+        $end_ts = strtotime( $date );
         if ( ! $end_ts ) {
             return false;
         }

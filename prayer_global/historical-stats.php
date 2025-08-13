@@ -144,10 +144,9 @@ class PG_Historical_Stats {
 
 
         // Calculate end of day timestamp for the date
-        $date_start = $date . ' 00:00:00';
-        $date_end = $date . ' 23:59:59';
-        $timestamp_start = strtotime( $date_start );
+        $date_end = $date;
         $timestamp_end = strtotime( $date_end );
+        $timestamp_start = strtotime( $timestamp_end - 1 * DAY_IN_SECONDS - 1 );
 
         // 1. Prayer Warriors - distinct hashes up to this date
         $prayer_warriors_sql = $wpdb->prepare( "
