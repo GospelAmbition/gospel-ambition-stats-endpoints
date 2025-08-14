@@ -106,13 +106,16 @@ class PG_Daily_Stats_Sender {
         ";
         $total_prayers = $wpdb->get_var( $prayers_sql );
 
-        // 4. Laps Completed - get current lap number from dt_relays table
-        $laps_sql = "
-            SELECT COALESCE(MIN(total), 0) as laps_completed
-            FROM {$wpdb->dt_relays}
-            WHERE relay_key = '49ba4c'
-        ";
-        $laps_completed = (int) $wpdb->get_var( $laps_sql );
+        // 4. Laps Completed - use lap_completed logs for global relay (post_id = 2128)
+        $global_post_id = 2128;
+        $laps_completed = (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT count(*)
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'lap_completed'
+            AND post_type = 'pg_relays'
+            AND post_id = %d",
+            $global_post_id
+        ) );
 
 
         // 6. Total registered users
@@ -122,18 +125,15 @@ class PG_Daily_Stats_Sender {
         ";
         $total_users = $wpdb->get_var( $users_sql );
 
-        // 7. Custom laps completed - sum the min total for each relay_key (excluding 49ba4c) where count = 4700
-        $custom_laps_sql = "
-            SELECT COALESCE(SUM(min_total), 0) as custom_laps_completed
-            FROM (
-                SELECT relay_key, MIN(total) as min_total, COUNT(*) as relay_count
-                FROM {$wpdb->dt_relays}
-                WHERE relay_key != '49ba4c'
-                GROUP BY relay_key
-                HAVING relay_count = 4770
-            ) grouped_relays
-        ";
-        $custom_laps_completed = (int) $wpdb->get_var( $custom_laps_sql );
+        // 7. Custom laps completed - count lap_completed logs for non-global relays (global post_id = 2128)
+        $custom_laps_completed = (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT SUM(value)
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'lap_completed'
+            AND post_type = 'pg_relays'
+            AND post_id != %d",
+            $global_post_id
+        ) );
 
         // 8. Daily active users metrics (last 24 hours)
         $now = time();

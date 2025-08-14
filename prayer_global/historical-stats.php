@@ -120,7 +120,7 @@ class PG_Historical_Stats {
             }
 
             // Add a small delay to avoid overwhelming the API
-            usleep( 500000 ); // 0.5 second delay
+            // usleep( 500000 ); // 0.5 second delay
 
             $current_date = date( 'Y-m-d', strtotime( $current_date . ' +1 day' ) );
         }
@@ -146,7 +146,7 @@ class PG_Historical_Stats {
         // Calculate end of day timestamp for the date
         $date_end = $date;
         $timestamp_end = strtotime( $date_end );
-        $timestamp_start = strtotime( $timestamp_end - 1 * DAY_IN_SECONDS - 1 );
+        $timestamp_start = $timestamp_end - 1 * DAY_IN_SECONDS - 1;
 
         // 1. Prayer Warriors - distinct hashes up to this date
         $prayer_warriors_sql = $wpdb->prepare( "
@@ -175,16 +175,18 @@ class PG_Historical_Stats {
         ", $timestamp_end );
         $total_prayers = $wpdb->get_var( $prayers_sql );
 
-        // 4. Laps completed - get historical lap number from dt_reports table
-        $laps_sql = $wpdb->prepare( "
-            SELECT COALESCE(MIN(global_lap_number), 0)-1 as laps_completed
+        // 4. Laps completed - use lap_completed logs up to this date for global relay
+        $global_post_id = 2128;
+        $laps_completed = 0;
+        $laps_completed = (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT count(*)
             FROM {$wpdb->dt_reports}
-            WHERE type = 'prayer_app'
-            AND timestamp <= %d
-            AND timestamp >= %d
-            AND global_lap_number > 0
-        ", $timestamp_end, $timestamp_end - 1 * DAY_IN_SECONDS );
-        $laps_completed = (int) $wpdb->get_var( $laps_sql );
+            WHERE type = 'lap_completed'
+            AND post_type = 'pg_relays'
+            AND post_id = %d
+            AND timestamp <= %d",
+            $global_post_id, $timestamp_end
+        ) );
 
 
         // 6. Total registered users up to this date
@@ -195,21 +197,16 @@ class PG_Historical_Stats {
         ", $date_end );
         $total_users = $wpdb->get_var( $users_sql );
 
-        // 7. Custom laps completed - sum the min custom_lap_number from dt_reports table up to this date
-        $custom_laps_sql = $wpdb->prepare( "
-            SELECT COALESCE(SUM(min_custom_lap-1), 0) as custom_laps_completed
-            FROM (
-                SELECT MIN(lap_number) as min_custom_lap
-                FROM {$wpdb->dt_reports}
-                WHERE type = 'prayer_app'
-                AND timestamp <= %d
-                AND timestamp >= %d
-                AND lap_number > 0
-                AND subtype = 'custom'
-                GROUP BY post_id
-            ) grouped_custom_laps
-        ", $timestamp_end, $timestamp_end - 7 * DAY_IN_SECONDS );
-        $custom_laps_completed = (int) $wpdb->get_var( $custom_laps_sql );
+        // 7. Custom laps completed - count lap_completed logs up to this date for non-global relays
+        $custom_laps_completed = (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT SUM(value)
+            FROM {$wpdb->dt_reports}
+            WHERE type = 'lap_completed'
+            AND post_type = 'pg_relays'
+            AND post_id != %d
+            AND timestamp <= %d",
+            $global_post_id, $timestamp_end
+        ) );
 
         // 8. Historical Daily active users metrics (for this specific date)        
         // Daily recurring active users - users active on this date who were also active before - SUPER OPTIMIZED
