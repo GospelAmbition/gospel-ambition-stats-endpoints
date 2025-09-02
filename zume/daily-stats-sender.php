@@ -89,9 +89,66 @@ class Zume_Daily_Stats_Sender {
         ";
         $total_users = $wpdb->get_var( $users_sql );
 
-        return [
+        // Count enabled languages (version 5 ready)
+        $enabled_languages = zume_languages();
+        $languages_enabled_count = count( $enabled_languages );
+
+        // Initialize metrics array
+        $metrics = [
             'registered_users' => (int) $total_users,
+            'zume_languages_enabled' => (int) $languages_enabled_count,
         ];
+
+        // Calculate participation stats for each of the 33 training items
+        for ( $i = 1; $i <= 33; $i++ ) {
+            // Users who heard item X
+            $heard_sql = $wpdb->prepare( "
+                SELECT COUNT(DISTINCT user_id) as users_heard
+                FROM {$wpdb->dt_reports}
+                WHERE post_type = 'zume'
+                AND type = 'training'
+                AND subtype = %s
+            ", $i . '_heard' );
+            $users_heard = $wpdb->get_var( $heard_sql );
+
+            // Users who obeyed item X
+            $obeyed_sql = $wpdb->prepare( "
+                SELECT COUNT(DISTINCT user_id) as users_obeyed
+                FROM {$wpdb->dt_reports}
+                WHERE post_type = 'zume'
+                AND type = 'training'
+                AND subtype = %s
+            ", $i . '_obeyed' );
+            $users_obeyed = $wpdb->get_var( $obeyed_sql );
+
+            // Users who shared item X
+            $shared_sql = $wpdb->prepare( "
+                SELECT COUNT(DISTINCT user_id) as users_shared
+                FROM {$wpdb->dt_reports}
+                WHERE post_type = 'zume'
+                AND type = 'training'
+                AND subtype = %s
+            ", $i . '_shared' );
+            $users_shared = $wpdb->get_var( $shared_sql );
+
+            // Users who trained item X
+            $trained_sql = $wpdb->prepare( "
+                SELECT COUNT(DISTINCT user_id) as users_trained
+                FROM {$wpdb->dt_reports}
+                WHERE post_type = 'zume'
+                AND type = 'training'
+                AND subtype = %s
+            ", $i . '_trained' );
+            $users_trained = $wpdb->get_var( $trained_sql );
+
+            // Add to metrics array
+            $metrics["users_heard_{$i}"] = (int) $users_heard;
+            $metrics["users_obeyed_{$i}"] = (int) $users_obeyed;
+            $metrics["users_shared_{$i}"] = (int) $users_shared;
+            $metrics["users_trained_{$i}"] = (int) $users_trained;
+        }
+
+        return $metrics;
     }
 
     /**

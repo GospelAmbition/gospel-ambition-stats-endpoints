@@ -144,6 +144,8 @@ class Zume_Historical_Stats {
 
         // Calculate end of day timestamp for the date
         $date_end = $date;
+        $timestamp_end = strtotime( $date_end );
+        $timestamp_start = $timestamp_end - 1 * DAY_IN_SECONDS - 1;
 
         // Total registered users up to this date
         $users_sql = $wpdb->prepare( "
@@ -157,9 +159,69 @@ class Zume_Historical_Stats {
             return false;
         }
 
-        return [
+        // Initialize metrics array
+        $metrics = [
             'registered_users' => (int) $total_users,
         ];
+
+        // Calculate participation stats for each of the 33 training items up to this date
+        // Only include training stats for dates from March 2020 onwards
+        $training_stats_start_date = '2020-03-01';
+        if ( strtotime( $date ) >= strtotime( $training_stats_start_date ) ) {
+            for ( $i = 1; $i <= 33; $i++ ) {
+            // Users who heard item X up to this date
+            $heard_sql = $wpdb->prepare( "
+                SELECT COUNT(DISTINCT user_id) as users_heard
+                FROM {$wpdb->dt_reports}
+                WHERE post_type = 'zume'
+                AND type = 'training'
+                AND subtype = %s
+                AND timestamp <= %d
+            ", $i . '_heard', $timestamp_end );
+            $users_heard = $wpdb->get_var( $heard_sql );
+
+            // Users who obeyed item X up to this date
+            $obeyed_sql = $wpdb->prepare( "
+                SELECT COUNT(DISTINCT user_id) as users_obeyed
+                FROM {$wpdb->dt_reports}
+                WHERE post_type = 'zume'
+                AND type = 'training'
+                AND subtype = %s
+                AND timestamp <= %d
+            ", $i . '_obeyed', $timestamp_end );
+            $users_obeyed = $wpdb->get_var( $obeyed_sql );
+
+            // Users who shared item X up to this date
+            $shared_sql = $wpdb->prepare( "
+                SELECT COUNT(DISTINCT user_id) as users_shared
+                FROM {$wpdb->dt_reports}
+                WHERE post_type = 'zume'
+                AND type = 'training'
+                AND subtype = %s
+                AND timestamp <= %d
+            ", $i . '_shared', $timestamp_end );
+            $users_shared = $wpdb->get_var( $shared_sql );
+
+            // Users who trained item X up to this date
+            $trained_sql = $wpdb->prepare( "
+                SELECT COUNT(DISTINCT user_id) as users_trained
+                FROM {$wpdb->dt_reports}
+                WHERE post_type = 'zume'
+                AND type = 'training'
+                AND subtype = %s
+                AND timestamp <= %d
+            ", $i . '_trained', $timestamp_end );
+            $users_trained = $wpdb->get_var( $trained_sql );
+
+                // Add to metrics array
+                $metrics["users_heard_{$i}"] = (int) $users_heard;
+                $metrics["users_obeyed_{$i}"] = (int) $users_obeyed;
+                $metrics["users_shared_{$i}"] = (int) $users_shared;
+                $metrics["users_trained_{$i}"] = (int) $users_trained;
+            }
+        }
+
+        return $metrics;
     }
 
     /**

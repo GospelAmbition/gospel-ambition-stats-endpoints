@@ -97,7 +97,17 @@ class Zume_Historical_Stats_Admin {
                     <h2>Zume Metrics</h2>
                     <ul>
                         <li><strong>Registered Users:</strong> Total number of registered WordPress users</li>
+                        <li><strong>Zume Languages Enabled:</strong> Number of languages currently enabled (version 5 ready)</li>
+                        <li><strong>Training Participation:</strong> For each of the 33 training items (1-33):
+                            <ul>
+                                <li><strong>users_heard_X:</strong> Users who have heard training item X</li>
+                                <li><strong>users_obeyed_X:</strong> Users who have obeyed training item X</li>
+                                <li><strong>users_shared_X:</strong> Users who have shared training item X</li>
+                                <li><strong>users_trained_X:</strong> Users who have trained others in item X</li>
+                            </ul>
+                        </li>
                     </ul>
+                    <p><em>Note: Training participation is tracked in dt_reports with post_type='zume', type='training', and subtypes like '1_heard', '1_obeyed', etc.</em></p>
                 </div>
 
                 <div class="card">
@@ -147,21 +157,81 @@ class Zume_Historical_Stats_Admin {
                 <div class="card">
                     <h2>Current Stats (Today)</h2>
                     <?php
-                    // Get current metrics from the daily stats sender
-                    $daily_stats = new Zume_Daily_Stats_Sender();
-                    $reflection = new ReflectionClass($daily_stats);
-                    $calculate_metrics = $reflection->getMethod('calculate_metrics');
+                    // Get current metrics from the historical stats processor
+                    $historical_stats = new Zume_Historical_Stats();
+                    $reflection = new ReflectionClass($historical_stats);
+                    $calculate_metrics = $reflection->getMethod('calculate_historical_metrics_for_date');
                     $calculate_metrics->setAccessible(true);
-                    $metrics = $calculate_metrics->invoke($daily_stats);
+                    $metrics = $calculate_metrics->invoke($historical_stats, date('Y-m-d'));
                     
                     $total_users = $metrics['registered_users'];
+                    
+                    // Get current language count separately (this is current data, not historical)
+                    $enabled_languages = zume_languages();
+                    $languages_enabled = count( $enabled_languages );
+                    
+                    // Calculate totals across all training items
+                    $total_heard = $total_obeyed = $total_shared = $total_trained = 0;
+                    for ( $i = 1; $i <= 33; $i++ ) {
+                        $total_heard += (int) $metrics["users_heard_{$i}"];
+                        $total_obeyed += (int) $metrics["users_obeyed_{$i}"];
+                        $total_shared += (int) $metrics["users_shared_{$i}"];
+                        $total_trained += (int) $metrics["users_trained_{$i}"];
+                    }
                     ?>
                     <div class="current-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 15px 0;">
                         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
                             <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $total_users ); ?></h3>
                             <p style="margin: 5px 0 0 0; font-weight: bold;">Registered Users</p>
                         </div>
+                        <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $languages_enabled ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Languages Enabled</p>
+                        </div>
+                        <div style="background: #e8f4fd; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( $total_heard ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Total Heard</p>
+                        </div>
+                        <div style="background: #fff2e8; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( $total_obeyed ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Total Obeyed</p>
+                        </div>
+                        <div style="background: #f0f8e8; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( $total_shared ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Total Shared</p>
+                        </div>
+                        <div style="background: #ffeaa7; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( $total_trained ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">Total Trained</p>
+                        </div>
                     </div>
+                    
+                    <h3>All Training Items (1-33)</h3>
+                    <div style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; background: white; margin-top: 10px;">
+                        <table class="wp-list-table widefat fixed striped">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Heard</th>
+                                    <th>Obeyed</th>
+                                    <th>Shared</th>
+                                    <th>Trained</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php for ( $i = 1; $i <= 33; $i++ ) : ?>
+                                <tr>
+                                    <td><?php echo $i; ?></td>
+                                    <td><?php echo number_format( (int) $metrics["users_heard_{$i}"] ); ?></td>
+                                    <td><?php echo number_format( (int) $metrics["users_obeyed_{$i}"] ); ?></td>
+                                    <td><?php echo number_format( (int) $metrics["users_shared_{$i}"] ); ?></td>
+                                    <td><?php echo number_format( (int) $metrics["users_trained_{$i}"] ); ?></td>
+                                </tr>
+                                <?php endfor; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    
                     <p><small><em>Last updated: <?php echo date( 'Y-m-d H:i:s T' ); ?></em></small></p>
                 </div>
 
