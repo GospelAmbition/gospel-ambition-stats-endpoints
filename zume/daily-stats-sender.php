@@ -93,10 +93,45 @@ class Zume_Daily_Stats_Sender {
         $enabled_languages = zume_languages();
         $languages_enabled_count = count( $enabled_languages );
 
+        // Calculate active users based on dt_reports activity
+        $seven_days_ago = time() - (7 * 24 * 60 * 60);
+        $thirty_days_ago = time() - (30 * 24 * 60 * 60);
+        $ninety_days_ago = time() - (90 * 24 * 60 * 60);
+
+        // 7 day active users
+        $active_7_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT user_id) as active_users
+            FROM {$wpdb->dt_reports}
+            WHERE post_type = 'zume'
+            AND timestamp >= %d
+        ", $seven_days_ago );
+        $active_7_days = $wpdb->get_var( $active_7_sql );
+
+        // 30 day active users
+        $active_30_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT user_id) as active_users
+            FROM {$wpdb->dt_reports}
+            WHERE post_type = 'zume'
+            AND timestamp >= %d
+        ", $thirty_days_ago );
+        $active_30_days = $wpdb->get_var( $active_30_sql );
+
+        // 90 day active users
+        $active_90_sql = $wpdb->prepare( "
+            SELECT COUNT(DISTINCT user_id) as active_users
+            FROM {$wpdb->dt_reports}
+            WHERE post_type = 'zume'
+            AND timestamp >= %d
+        ", $ninety_days_ago );
+        $active_90_days = $wpdb->get_var( $active_90_sql );
+
         // Initialize metrics array
         $metrics = [
             'registered_users' => (int) $total_users,
             'zume_languages_enabled' => (int) $languages_enabled_count,
+            '7_day_active' => (int) $active_7_days,
+            '30_day_active' => (int) $active_30_days,
+            '90_day_active' => (int) $active_90_days,
         ];
 
         // Calculate participation stats for each of the 33 training items

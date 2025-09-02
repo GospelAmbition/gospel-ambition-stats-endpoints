@@ -97,6 +97,13 @@ class Zume_Historical_Stats_Admin {
                     <h2>Zume Metrics</h2>
                     <ul>
                         <li><strong>Registered Users:</strong> Total number of registered WordPress users</li>
+                        <li><strong>Active Users:</strong> Users with activity in dt_reports within the specified timeframes:
+                            <ul>
+                                <li><strong>7_day_active:</strong> Users active in the last 7 days</li>
+                                <li><strong>30_day_active:</strong> Users active in the last 30 days</li>
+                                <li><strong>90_day_active:</strong> Users active in the last 90 days</li>
+                            </ul>
+                        </li>
                         <li><strong>Zume Languages Enabled:</strong> Number of languages currently enabled (version 5 ready)</li>
                         <li><strong>Training Participation:</strong> For each of the 33 training items (1-33):
                             <ul>
@@ -107,7 +114,7 @@ class Zume_Historical_Stats_Admin {
                             </ul>
                         </li>
                     </ul>
-                    <p><em>Note: Training participation is tracked in dt_reports with post_type='zume', type='training', and subtypes like '1_heard', '1_obeyed', etc.</em></p>
+                    <p><em>Note: Activity and training participation are tracked in dt_reports with post_type='zume'. Activity includes any record, while training uses subtypes like '1_heard', '1_obeyed', etc.</em></p>
                 </div>
 
                 <div class="card">
@@ -183,6 +190,18 @@ class Zume_Historical_Stats_Admin {
                         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; text-align: center;">
                             <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $total_users ); ?></h3>
                             <p style="margin: 5px 0 0 0; font-weight: bold;">Registered Users</p>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $metrics['7_day_active'] ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">7-Day Active</p>
+                        </div>
+                        <div style="background: #f0f8ff; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $metrics['30_day_active'] ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">30-Day Active</p>
+                        </div>
+                        <div style="background: #fff5ee; padding: 15px; border-radius: 5px; text-align: center;">
+                            <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $metrics['90_day_active'] ); ?></h3>
+                            <p style="margin: 5px 0 0 0; font-weight: bold;">90-Day Active</p>
                         </div>
                         <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; text-align: center;">
                             <h3 style="margin: 0; color: #0073aa;"><?php echo number_format( (int) $languages_enabled ); ?></h3>
